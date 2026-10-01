@@ -8,36 +8,42 @@ export function DeviceVisual({ compact = false }: { compact?: boolean }) {
 
   return (
     <div className="flex flex-col items-center gap-4">
-      <div
-        aria-hidden
-        className={cn(
-          "relative grid place-items-center rounded-[1.4rem] border border-border bg-gradient-to-br from-secondary to-card transition-transform duration-500",
-          compact ? "h-28 w-28" : "h-40 w-40",
-          device.orientation === "focus-up" && "-rotate-3",
-          device.orientation === "meeting-up" && "rotate-3",
-          device.orientation === "face-down" && "opacity-70",
-        )}
-        style={{ boxShadow: "var(--shadow-raised)" }}
-      >
-        <span
+      {/* Real CUBIQ 3D Hardware Cube Image */}
+      <div className="relative group flex flex-col items-center justify-center">
+        <div
           className={cn(
-            "absolute inset-3 rounded-[1rem] border transition-colors",
-            device.mode === "idle" ? "border-border" : "border-primary/40",
+            "relative overflow-hidden rounded-2xl border-2 bg-card p-1.5 shadow-xl transition-all duration-500",
+            compact ? "max-w-[180px]" : "max-w-[280px]",
+            device.orientation === "focus-up" && "-rotate-2 scale-102 border-primary shadow-primary/20",
+            device.orientation === "meeting-up" && "rotate-2 scale-102 border-primary shadow-primary/20",
+            device.orientation === "face-down" && "opacity-75 border-border",
+            device.mode !== "idle" && "border-primary/50",
           )}
-        />
-        <span className={cn("font-display font-extrabold tracking-[0.18em] text-foreground", compact ? "text-xs" : "text-sm")}>
-          CUBIQ
-        </span>
-        <span
-          className={cn(
-            "absolute bottom-5 h-2.5 w-2.5 rounded-full",
-            recording ? "bg-destructive animate-pulse-dot" : device.connected ? "bg-success" : "bg-muted-foreground/40",
-          )}
-        />
+        >
+          <img
+            src="/cubiq-hardware-cube.jpg"
+            alt="CUBIQ Hardware Microprocessor Cube"
+            className="w-full h-auto object-cover rounded-xl shadow-inner"
+          />
+
+          {/* Live Recording / Status LED Badge */}
+          <div className="absolute top-3 right-3 flex items-center gap-1.5 rounded-full bg-background/90 px-2.5 py-1 backdrop-blur border border-border text-[0.6875rem] font-semibold">
+            <span
+              className={cn(
+                "size-2 rounded-full",
+                recording ? "bg-destructive animate-pulse" : device.connected ? "bg-emerald-500 animate-pulse" : "bg-muted-foreground/40",
+              )}
+            />
+            <span className="text-foreground font-mono">
+              {recording ? "REC" : device.connected ? "LIVE" : "OFF"}
+            </span>
+          </div>
+        </div>
       </div>
+
       <div className="text-center">
         <p className="label-caps">Current face</p>
-        <p className="font-display text-lg font-bold tracking-[0.08em] text-foreground">{faceLabel}</p>
+        <p className="font-display text-lg font-bold tracking-[0.08em] text-primary">{faceLabel}</p>
         <p className="mt-1 text-xs text-muted-foreground">
           Orientation detected · {orientationLabel[device.orientation]}
         </p>
