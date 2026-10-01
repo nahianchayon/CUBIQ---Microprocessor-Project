@@ -40,28 +40,28 @@ function LoginPage() {
 
   return (
     <div className="min-h-screen grid place-items-center bg-background px-4 py-8">
-      <div className="w-full max-w-4xl overflow-hidden rounded-3xl border border-border bg-card shadow-2xl grid lg:grid-cols-2">
+      <div className="w-full max-w-4xl overflow-hidden rounded-3xl border border-border/60 bg-card/75 backdrop-blur-2xl shadow-2xl grid lg:grid-cols-2">
         {/* Left Side: CUBIQ Hardware Device Photo */}
-        <div className="relative hidden lg:flex flex-col items-center justify-center p-8 bg-gradient-to-br from-primary/10 via-card to-background border-r border-border">
+        <div className="relative hidden lg:flex flex-col items-center justify-center p-8 bg-secondary/30 border-r border-border/50">
           <div className="flex flex-col items-center text-center gap-4">
             <Link to="/" aria-label="CUBIQ home">
               <CubiqLogo />
             </Link>
-            <div className="relative overflow-hidden rounded-2xl border-2 border-primary/30 p-2 shadow-xl bg-card">
+            <div className="relative overflow-hidden rounded-2xl border-2 border-primary/30 p-2 shadow-xl bg-card/80 backdrop-blur-md">
               <img
                 src="/cubiq-hardware-cube.jpg"
                 alt="CUBIQ Microprocessor Cube"
                 className="w-full max-w-[280px] h-auto object-cover rounded-xl shadow-inner"
               />
             </div>
-            <p className="text-sm font-bold text-foreground">CUBIQ Smart Microprocessor System</p>
-            <p className="text-xs text-muted-foreground max-w-xs">
+            <p className="text-sm font-bold text-foreground font-display">CUBIQ Smart Microprocessor System</p>
+            <p className="text-xs text-muted-foreground font-medium max-w-xs">
               Physical gesture-controlled hardware device with cloud AI session analytics.
             </p>
           </div>
         </div>
 
-        {/* Right Side: Clean Login Form (Only Email, Password, Log In button, Sign Up option) */}
+        {/* Right Side: Clean Login Form */}
         <div className="flex flex-col justify-center p-6 sm:p-10 space-y-6">
           <div className="flex flex-col space-y-2 text-left">
             <div className="lg:hidden pb-2">
@@ -72,7 +72,7 @@ function LoginPage() {
             <h1 className="font-display text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl">
               Log In
             </h1>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs font-medium text-muted-foreground">
               Enter your email address and password to log in.
             </p>
           </div>
@@ -89,7 +89,7 @@ function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="name@company.com"
-                className="rounded-xl bg-background border-border h-11 text-sm font-medium"
+                className="rounded-xl h-11 text-sm font-medium"
               />
             </div>
 
@@ -104,7 +104,7 @@ function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter your password"
-                className="rounded-xl bg-background border-border h-11 text-sm font-medium"
+                className="rounded-xl h-11 text-sm font-medium"
               />
             </div>
 
@@ -112,7 +112,7 @@ function LoginPage() {
               type="submit"
               disabled={submitting}
               size="lg"
-              className="w-full rounded-xl font-bold bg-primary text-primary-foreground shadow-md h-11 text-sm mt-2"
+              className="w-full rounded-xl font-bold shadow-md h-11 text-sm mt-2"
             >
               {submitting ? (
                 "Logging In..."
@@ -125,7 +125,7 @@ function LoginPage() {
           </form>
 
           {/* Don't Have an Account? Sign Up Option */}
-          <div className="pt-4 border-t border-border text-center text-xs text-muted-foreground">
+          <div className="pt-4 border-t border-border/50 text-center text-xs text-muted-foreground font-medium">
             Don't have an account?{" "}
             <Link to="/signup" className="font-bold text-primary hover:underline ml-1">
               Sign Up
@@ -136,4 +136,3 @@ function LoginPage() {
     </div>
   );
 }
-

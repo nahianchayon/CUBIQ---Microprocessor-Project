@@ -7,11 +7,11 @@ export function CubiqLogo({ className }: { className?: string }) {
     <span className={cn("flex items-center gap-2.5", className)}>
       <span
         aria-hidden
-        className="grid h-9 w-9 place-items-center rounded-[0.7rem] bg-primary shadow-raised"
+        className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-md shadow-primary/25 border border-white/20"
       >
         <span className="relative block h-4 w-4">
           <span className="absolute inset-0 rounded-[3px] border-2 border-primary-foreground/90" />
-          <span className="absolute -right-1 -top-1 h-2.5 w-2.5 rounded-[2px] bg-primary-foreground/70" />
+          <span className="absolute -right-1 -top-1 h-2.5 w-2.5 rounded-[2px] bg-primary-foreground/75" />
         </span>
       </span>
       <span className="font-display text-lg font-extrabold tracking-[0.14em] text-foreground">
@@ -22,11 +22,11 @@ export function CubiqLogo({ className }: { className?: string }) {
 }
 
 const healthStyles: Record<ComponentHealth, { dot: string; chip: string; text: string }> = {
-  online: { dot: "bg-success", chip: "bg-success-soft text-success", text: "Online" },
-  ready: { dot: "bg-success", chip: "bg-success-soft text-success", text: "Ready" },
-  processing: { dot: "bg-warning", chip: "bg-warning-soft text-warning-foreground", text: "Processing" },
-  offline: { dot: "bg-destructive", chip: "bg-danger-soft text-destructive", text: "Offline" },
-  inactive: { dot: "bg-muted-foreground/50", chip: "bg-muted text-muted-foreground", text: "Inactive" },
+  online: { dot: "bg-emerald-500", chip: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 backdrop-blur-md", text: "Online" },
+  ready: { dot: "bg-emerald-500", chip: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 backdrop-blur-md", text: "Ready" },
+  processing: { dot: "bg-amber-500", chip: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 backdrop-blur-md", text: "Processing" },
+  offline: { dot: "bg-rose-500", chip: "bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 backdrop-blur-md", text: "Offline" },
+  inactive: { dot: "bg-muted-foreground/50", chip: "bg-muted/60 text-muted-foreground border border-border/40 backdrop-blur-md", text: "Inactive" },
 };
 
 export function StatusBadge({
@@ -44,7 +44,7 @@ export function StatusBadge({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold",
+        "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold shadow-2xs transition-all",
         style.chip,
         className,
       )}
@@ -68,8 +68,8 @@ export function StatusRow({
   value?: string;
 }) {
   return (
-    <div className="flex items-center justify-between gap-3 border-b border-border/70 py-2.5 last:border-0">
-      <span className="text-sm text-muted-foreground">{name}</span>
+    <div className="flex items-center justify-between gap-3 border-b border-border/50 py-3 last:border-0">
+      <span className="text-sm font-medium text-muted-foreground">{name}</span>
       {value ? <StatusBadge health={health} label={value} /> : <StatusBadge health={health} />}
     </div>
   );
@@ -87,9 +87,9 @@ export function PageHeader({
   return (
     <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <h1 className="font-display text-2xl font-bold text-foreground sm:text-3xl">{title}</h1>
+        <h1 className="font-display text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl lg:text-4xl">{title}</h1>
         {description ? (
-          <p className="mt-1 max-w-2xl text-sm text-muted-foreground">{description}</p>
+          <p className="mt-1.5 max-w-2xl text-sm font-medium text-muted-foreground">{description}</p>
         ) : null}
       </div>
       {action}
@@ -111,7 +111,7 @@ export function SectionCard({
   return (
     <section className={cn("surface p-5 sm:p-6", className)}>
       {title ? (
-        <div className="mb-4 flex items-center justify-between gap-3">
+        <div className="mb-4.5 flex items-center justify-between gap-3">
           <h2 className="label-caps">{title}</h2>
           {action}
         </div>
@@ -133,14 +133,14 @@ export function EmptyState({
   icon?: ReactNode;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border px-6 py-14 text-center">
+    <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border/80 bg-card/40 backdrop-blur-md px-6 py-14 text-center">
       {icon ? (
-        <div className="mb-4 grid h-12 w-12 place-items-center rounded-xl bg-muted text-muted-foreground">
+        <div className="mb-4 grid h-12 w-12 place-items-center rounded-2xl bg-primary/10 text-primary border border-primary/20">
           {icon}
         </div>
       ) : null}
       <h3 className="font-display text-base font-semibold text-foreground">{title}</h3>
-      <p className="mt-1.5 max-w-sm text-sm text-muted-foreground">{description}</p>
+      <p className="mt-1.5 max-w-sm text-sm text-muted-foreground font-medium">{description}</p>
       {action ? <div className="mt-5">{action}</div> : null}
     </div>
   );
@@ -150,7 +150,7 @@ export function AiBadge({ className }: { className?: string }) {
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full bg-primary-soft px-2.5 py-1 text-[0.6875rem] font-semibold uppercase tracking-[0.1em] text-accent-foreground",
+        "inline-flex items-center gap-1.5 rounded-full bg-primary/10 border border-primary/20 backdrop-blur-md px-2.5 py-1 text-[0.6875rem] font-bold uppercase tracking-[0.1em] text-primary",
         className,
       )}
     >

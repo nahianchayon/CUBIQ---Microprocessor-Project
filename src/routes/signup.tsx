@@ -67,22 +67,22 @@ function SignupPage() {
           <h1 className="font-display text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl pt-2">
             Create CUBIQ Account
           </h1>
-          <p className="text-sm text-muted-foreground max-w-xs">
+          <p className="text-sm font-medium text-muted-foreground max-w-xs">
             Connect your device, track focus sessions, and process meeting speech transcripts.
           </p>
         </div>
 
         {/* Quick Instant Dummy Signup Banner */}
-        <div className="rounded-2xl border border-primary/20 bg-primary-soft/40 p-3.5 space-y-2 text-xs">
+        <div className="rounded-2xl border border-primary/20 bg-primary/10 backdrop-blur-md p-3.5 space-y-2 text-xs">
           <div className="flex items-center justify-between font-bold text-primary">
-            <span className="flex items-center gap-1.5">
+            <span className="flex items-center gap-1.5 font-display">
               <Sparkles className="size-3.5" /> 1-Click Fast Signup
             </span>
-            <span className="text-[0.625rem] uppercase tracking-wider bg-primary/10 px-2 py-0.5 rounded-md border border-primary/20">
+            <span className="text-[0.625rem] font-extrabold uppercase tracking-wider bg-primary/15 px-2 py-0.5 rounded-md border border-primary/20">
               Dummy Account
             </span>
           </div>
-          <p className="text-muted-foreground text-[0.6875rem]">
+          <p className="text-muted-foreground font-medium text-[0.6875rem]">
             Test immediately with an auto-generated dummy profile or fill in your details below:
           </p>
           <Button
@@ -91,14 +91,14 @@ function SignupPage() {
             size="sm"
             onClick={handleQuickSignup}
             disabled={submitting}
-            className="w-full rounded-xl font-bold bg-card border-primary/30 text-primary hover:bg-primary-soft text-xs h-8"
+            className="w-full rounded-xl font-bold border-primary/30 text-primary hover:bg-primary/15 text-xs h-8.5 backdrop-blur-md"
           >
             Create Instant Dummy Account
           </Button>
         </div>
 
         {/* Signup Form Card */}
-        <div className="surface p-6 sm:p-8 space-y-6 shadow-raised">
+        <div className="surface p-6 sm:p-8 space-y-6 shadow-2xl">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-1.5">
               <Label htmlFor="name" className="text-xs font-bold text-foreground flex items-center gap-1.5">
@@ -112,7 +112,7 @@ function SignupPage() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Alex Johnson"
-                className="rounded-xl bg-card border-border h-11 text-sm font-medium"
+                className="rounded-xl h-11 text-sm font-medium"
               />
             </div>
 
@@ -128,7 +128,7 @@ function SignupPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="alex@company.com"
-                className="rounded-xl bg-card border-border h-11 text-sm font-medium"
+                className="rounded-xl h-11 text-sm font-medium"
               />
             </div>
 
@@ -145,12 +145,12 @@ function SignupPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Create password..."
-                  className="rounded-xl bg-card border-border h-11 text-sm font-medium pr-10"
+                  className="rounded-xl h-11 text-sm font-medium pr-10"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
@@ -170,7 +170,7 @@ function SignupPage() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Confirm password..."
-                className="rounded-xl bg-card border-border h-11 text-sm font-medium"
+                className="rounded-xl h-11 text-sm font-medium"
               />
             </div>
 
@@ -178,7 +178,7 @@ function SignupPage() {
               type="submit"
               disabled={submitting}
               size="lg"
-              className="w-full rounded-xl font-bold bg-primary text-primary-foreground shadow-md h-11 text-sm mt-2"
+              className="w-full rounded-xl font-bold shadow-md h-11 text-sm mt-2"
             >
               {submitting ? (
                 "Creating Account..."
@@ -191,8 +191,8 @@ function SignupPage() {
           </form>
 
           {/* Connection Mode Footer */}
-          <div className="pt-2 border-t border-border/50 text-center text-xs text-muted-foreground flex items-center justify-center gap-1.5">
-            <ShieldCheck className="size-3.5 text-success" />
+          <div className="pt-2 border-t border-border/50 text-center text-xs text-muted-foreground font-medium flex items-center justify-center gap-1.5">
+            <ShieldCheck className="size-3.5 text-emerald-500" />
             <span>
               {isFirebaseActive ? "Syncs with Firebase Authentication" : "Offline Dummy Authentication Active"}
             </span>
