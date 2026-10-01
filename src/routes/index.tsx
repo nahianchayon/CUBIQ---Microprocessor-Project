@@ -13,6 +13,7 @@ import {
   Sparkles,
   Timer,
   UserPlus,
+  Users,
   Zap,
 } from "lucide-react";
 
@@ -35,7 +36,7 @@ export const Route = createFileRoute("/")({
       {
         property: "og:description",
         content:
-          "Official CUBIQ Microprocessor website designed and built by Nahian Rahman Chayon.",
+          "Official CUBIQ Microprocessor website created by Nahian Rahman Chayon and the team.",
       },
     ],
   }),
@@ -47,8 +48,8 @@ function HomePage() {
   const { device, setOrientation, pressStart, pressStop, status } = useDevice();
 
   return (
-    <div className="flex flex-col gap-12 py-4">
-      {/* Hero Section */}
+    <div className="flex flex-col gap-14 py-4">
+      {/* 1. HERO SECTION */}
       <section className="relative overflow-hidden rounded-3xl border border-border bg-gradient-to-b from-card via-card/90 to-background p-6 sm:p-10 lg:p-14 shadow-xl">
         <div className="absolute -top-24 -right-24 size-96 rounded-full bg-primary/10 blur-3xl pointer-events-none" />
         <div className="absolute -bottom-24 -left-24 size-96 rounded-full bg-accent/10 blur-3xl pointer-events-none" />
@@ -68,7 +69,7 @@ function HomePage() {
               Physical gesture-controlled microprocessor device synced with cloud AI session analytics, automated meeting transcriptions, and Realtime Firebase state management.
             </p>
 
-            {/* Prominent Action Buttons (Log In & Sign Up) */}
+            {/* Prominent Log In and Sign Up Action Buttons */}
             <div className="flex flex-wrap items-center gap-4 pt-2">
               {user ? (
                 <Button size="lg" asChild className="gap-2 font-semibold shadow-lg">
@@ -104,7 +105,7 @@ function HomePage() {
               </Button>
             </div>
 
-            {/* Quick Live Indicators */}
+            {/* Live Indicators */}
             <div className="grid grid-cols-3 gap-4 pt-6 border-t border-border/60">
               <div>
                 <p className="text-2xl font-bold text-foreground">100%</p>
@@ -180,7 +181,43 @@ function HomePage() {
         </div>
       </section>
 
-      {/* DEVELOPER PROFILE SECTION - NAHIAN RAHMAN CHAYON */}
+      {/* 2. THE PEOPLE WHO MADE IT HAPPEN - BIG & CENTERED IN THE MIDDLE */}
+      <section className="flex flex-col items-center text-center gap-6 py-4">
+        <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-xs font-semibold text-primary">
+          <Users className="size-4" />
+          <span>Project Team & Visionaries</span>
+        </div>
+
+        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-foreground">
+          The People Who Made It Happen
+        </h2>
+
+        <p className="max-w-2xl text-base sm:text-lg text-muted-foreground leading-relaxed">
+          The dedicated team behind the CUBIQ Microprocessor Project — bringing together hardware engineering, software architecture, IoT cloud connectivity, and innovation.
+        </p>
+
+        {/* Big Centered Photo Showcase Container */}
+        <div className="relative w-full max-w-4xl overflow-hidden rounded-3xl border-2 border-primary/30 bg-card p-3 sm:p-5 shadow-2xl">
+          <div className="absolute -inset-2 rounded-3xl bg-gradient-to-r from-primary via-accent to-emerald-500 opacity-25 blur-2xl pointer-events-none" />
+          
+          <img
+            src="/team-people-who-made-it-happen.jpg"
+            alt="The People Who Made It Happen - CUBIQ Project Team"
+            className="relative w-full h-auto max-h-[650px] object-cover rounded-2xl border border-border shadow-xl"
+          />
+
+          <div className="mt-4 flex flex-col items-center gap-1.5 pb-2">
+            <h3 className="text-lg font-bold text-foreground">
+              CUBIQ Microprocessor Team
+            </h3>
+            <p className="text-xs sm:text-sm text-primary font-medium">
+              Hardware Engineering · IoT Realtime Database Sync · System Architecture
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* 3. DEVELOPER PROFILE SECTION - NAHIAN RAHMAN CHAYON */}
       <section className="relative overflow-hidden rounded-3xl border border-primary/20 bg-card p-6 sm:p-10 shadow-lg">
         <div className="flex flex-col md:flex-row items-center gap-8 lg:gap-12">
           {/* Developer Photo */}
@@ -200,7 +237,7 @@ function HomePage() {
           <div className="flex flex-col gap-4 text-center md:text-left flex-1">
             <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary w-max mx-auto md:mx-0">
               <Award className="size-3.5" />
-              <span>Project Creator & System Developer</span>
+              <span>Developer & System Architect</span>
             </div>
 
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-foreground">
@@ -254,7 +291,7 @@ function HomePage() {
         </div>
       </section>
 
-      {/* CORE FEATURES GRID */}
+      {/* 4. CORE FEATURES GRID */}
       <section className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         <SectionCard title="Hardware Telemetry" action={<Cpu className="size-5 text-primary" />}>
           <p className="text-sm text-muted-foreground leading-relaxed">
@@ -293,7 +330,7 @@ function HomePage() {
         </SectionCard>
       </section>
 
-      {/* SYSTEM NAVIGATION CARDS */}
+      {/* 5. SYSTEM NAVIGATION CARDS */}
       <section className="rounded-3xl border border-border bg-card p-6 sm:p-8">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-border">
           <div>
