@@ -233,7 +233,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <div className={cn(user ? "lg:pl-64" : "w-full")}>
         {/* Sticky Header Bar */}
         <header className="sticky top-0 z-20 flex items-center justify-between gap-3 border-b border-border bg-background/85 px-4 py-3 backdrop-blur sm:px-6">
-          {/* Top Left Corner: Developer Badge + CUBIQ Logo + Dark Mode Button on Right Side of CUBIQ */}
+          {/* Top Left Area: Small Developer Badge + CUBIQ Logo + Dark Mode Button on Right Side of CUBIQ Logo */}
           <div className="flex items-center gap-2 sm:gap-3">
             {user ? (
               <Button
@@ -252,15 +252,15 @@ export function AppShell({ children }: { children: ReactNode }) {
               href="https://github.com/nahianchayon/CUBIQ---Microprocessor-Project"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 rounded-full border border-border/80 bg-card/90 px-2 py-1 shadow-xs hover:border-primary/40 transition-colors"
-              title="Lead Developer: Nahian Rahman Chayon"
+              className="flex items-center gap-1.5 rounded-full border border-border/80 bg-card/90 px-2.5 py-1 shadow-xs hover:border-primary/40 transition-colors"
+              title="Developer: Nahian Rahman Chayon"
             >
               <img
                 src="/developer-nahian.jpg"
                 alt="Nahian Rahman Chayon"
-                className="size-5 sm:size-6 rounded-full object-cover border border-primary shrink-0"
+                className="size-5 rounded-full object-cover border border-primary shrink-0"
               />
-              <span className="text-[0.625rem] sm:text-[0.6875rem] font-bold text-foreground truncate max-w-[110px] sm:max-w-none">
+              <span className="text-[0.6875rem] font-bold text-foreground hidden sm:inline-block">
                 Nahian Rahman Chayon
               </span>
             </a>
@@ -283,6 +283,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             </Button>
           </div>
 
+          {/* Top Right Header Area */}
           <div className="flex items-center gap-3">
             {user && status === "recording" ? (
               <span className="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-danger-soft px-2.5 py-1 text-xs font-semibold text-destructive">
