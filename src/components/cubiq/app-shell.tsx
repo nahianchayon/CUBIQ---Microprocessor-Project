@@ -27,7 +27,6 @@ import { useDevice, modeLabel } from "@/lib/cubiq/device-store";
 import { cn } from "@/lib/utils";
 
 const mainNav = [
-  { to: "/", label: "Homepage", icon: Home },
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/focus", label: "Focus", icon: Timer },
   { to: "/meetings", label: "Meetings", icon: Mic },
@@ -42,7 +41,7 @@ const deviceNav = [
   { to: "/settings", label: "Settings", icon: Settings },
 ] as const;
 
-const mobileNav = [mainNav[1], mainNav[2], mainNav[3], mainNav[7], deviceNav[0]] as const;
+const mobileNav = [mainNav[0], mainNav[1], mainNav[2], mainNav[6], deviceNav[0]] as const;
 
 function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
   const { user, logout } = useAuth();
@@ -197,7 +196,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       {user ? (
         <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r border-sidebar-border bg-sidebar lg:flex">
           <div className="px-5 py-5 flex items-center justify-between">
-            <Link to="/" aria-label="CUBIQ home">
+            <Link to={user ? "/dashboard" : "/"} aria-label="CUBIQ home">
               <CubiqLogo />
             </Link>
           </div>
@@ -248,7 +247,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             ) : null}
 
             {/* CUBIQ Logo */}
-            <Link to="/" aria-label="CUBIQ home" className="flex items-center">
+            <Link to={user ? "/dashboard" : "/"} aria-label="CUBIQ home" className="flex items-center">
               <CubiqLogo />
             </Link>
 

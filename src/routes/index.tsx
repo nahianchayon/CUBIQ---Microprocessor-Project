@@ -1,4 +1,4 @@
-import { createFileRoute, Link, Navigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   Activity,
   ArrowRight,
@@ -42,10 +42,6 @@ export const Route = createFileRoute("/")({
 function HomePage() {
   const { user } = useAuth();
   const { device, setOrientation, pressStart, pressStop, status } = useDevice();
-
-  if (user) {
-    return <Navigate to="/dashboard" replace />;
-  }
 
   return (
     <div className="flex flex-col gap-14 py-4">
