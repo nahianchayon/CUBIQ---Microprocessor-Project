@@ -6,16 +6,22 @@ import {
   Cpu,
   FileText,
   LayoutDashboard,
+  LogIn,
+  LogOut,
   Menu,
   Mic,
+  Moon,
   Settings,
   Sparkles,
+  Sun,
   Timer,
+  UserPlus,
   X,
 } from "lucide-react";
 
 import { CubiqLogo, StatusBadge } from "@/components/cubiq/primitives";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/lib/cubiq/auth-context";
 import { useDevice, modeLabel } from "@/lib/cubiq/device-store";
 import { cn } from "@/lib/utils";
 
