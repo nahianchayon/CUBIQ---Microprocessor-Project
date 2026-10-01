@@ -231,21 +231,10 @@ export function AppShell({ children }: { children: ReactNode }) {
       ) : null}
 
       <div className={cn(user ? "lg:pl-64" : "w-full")}>
-        {/* Sticky Header Bar with Top Left Corner Darkmode Toggle */}
+        {/* Sticky Header Bar */}
         <header className="sticky top-0 z-20 flex items-center justify-between gap-3 border-b border-border bg-background/85 px-4 py-3 backdrop-blur sm:px-6">
-          <div className="flex items-center gap-2">
-            {/* Top-Left Corner Dark Mode Button */}
-            <Button
-              size="icon"
-              variant="outline"
-              aria-label="Toggle Dark Mode"
-              onClick={toggleTheme}
-              className="size-8 rounded-lg border-border bg-card text-foreground hover:bg-secondary shrink-0 shadow-xs"
-              title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
-            >
-              {isDark ? <Sun className="size-4 text-warning" /> : <Moon className="size-4 text-primary" />}
-            </Button>
-
+          {/* Top Left Corner: Developer Badge + CUBIQ Logo + Dark Mode Button on Right Side of CUBIQ */}
+          <div className="flex items-center gap-2 sm:gap-3">
             {user ? (
               <Button
                 size="icon"
@@ -258,9 +247,40 @@ export function AppShell({ children }: { children: ReactNode }) {
               </Button>
             ) : null}
 
-            <Link to="/" aria-label="CUBIQ home" className="ml-1">
+            {/* Small Developer Badge in Top Left Corner */}
+            <a
+              href="https://github.com/nahianchayon/CUBIQ---Microprocessor-Project"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 rounded-full border border-border/80 bg-card/90 px-2 py-1 shadow-xs hover:border-primary/40 transition-colors"
+              title="Lead Developer: Nahian Rahman Chayon"
+            >
+              <img
+                src="/developer-nahian.jpg"
+                alt="Nahian Rahman Chayon"
+                className="size-5 sm:size-6 rounded-full object-cover border border-primary shrink-0"
+              />
+              <span className="text-[0.625rem] sm:text-[0.6875rem] font-bold text-foreground truncate max-w-[110px] sm:max-w-none">
+                Nahian Rahman Chayon
+              </span>
+            </a>
+
+            {/* CUBIQ Logo */}
+            <Link to="/" aria-label="CUBIQ home" className="flex items-center">
               <CubiqLogo />
             </Link>
+
+            {/* Darkmode Button ON RIGHT SIDE OF CUBIQ LOGO */}
+            <Button
+              size="icon"
+              variant="outline"
+              aria-label="Toggle Dark Mode"
+              onClick={toggleTheme}
+              className="size-8 rounded-lg border-border bg-card text-foreground hover:bg-secondary shrink-0 shadow-xs ml-0.5"
+              title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+            >
+              {isDark ? <Sun className="size-4 text-warning" /> : <Moon className="size-4 text-primary" />}
+            </Button>
           </div>
 
           <div className="flex items-center gap-3">
