@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import { ActivityTimeline } from "@/components/cubiq/activity-timeline";
 import { PageHeader, SectionCard } from "@/components/cubiq/primitives";
+import { ProtectedRoute } from "@/components/cubiq/protected-route";
 import { ProductivityChart } from "@/components/cubiq/productivity-chart";
 import { StatCard } from "@/components/cubiq/stat-card";
 import { useDevice } from "@/lib/cubiq/device-store";
@@ -24,8 +25,9 @@ function ProductivityPage() {
   const { sessions } = useDevice();
   const sum = (k: "focusMinutes" | "meetingMinutes" | "completedSessions" | "recordings") =>
     mockProductivity.reduce((a, d) => a + d[k], 0);
+
   return (
-    <>
+    <ProtectedRoute>
       <PageHeader title="Productivity" description="How your week with CUBIQ is going." />
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <StatCard label="Focus this week" value={formatMinutes(sum("focusMinutes"))} />
@@ -39,6 +41,6 @@ function ProductivityPage() {
       <SectionCard title="All sessions">
         <ActivityTimeline sessions={sessions} />
       </SectionCard>
-    </>
+    </ProtectedRoute>
   );
 }

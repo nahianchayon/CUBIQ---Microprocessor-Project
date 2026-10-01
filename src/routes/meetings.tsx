@@ -4,6 +4,7 @@ import { Check } from "lucide-react";
 import { ActivityTimeline } from "@/components/cubiq/activity-timeline";
 import { CurrentActivityCard } from "@/components/cubiq/current-activity";
 import { PageHeader, SectionCard } from "@/components/cubiq/primitives";
+import { ProtectedRoute } from "@/components/cubiq/protected-route";
 import { useDevice, type PipelineStage } from "@/lib/cubiq/device-store";
 import { cn } from "@/lib/utils";
 
@@ -30,8 +31,9 @@ const stages: { id: PipelineStage; label: string }[] = [
 function MeetingsPage() {
   const { sessions, pipeline } = useDevice();
   const current = stages.findIndex((s) => s.id === pipeline);
+
   return (
-    <>
+    <ProtectedRoute>
       <PageHeader title="Meetings" description="Turn CUBIQ to the Meeting face and press START to record." />
       <CurrentActivityCard />
       <SectionCard title="Processing pipeline">
@@ -59,6 +61,6 @@ function MeetingsPage() {
       <SectionCard title="Meeting history">
         <ActivityTimeline sessions={sessions.filter((s) => s.type === "meeting")} />
       </SectionCard>
-    </>
+    </ProtectedRoute>
   );
 }

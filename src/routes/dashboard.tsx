@@ -5,6 +5,7 @@ import { ActivityTimeline } from "@/components/cubiq/activity-timeline";
 import { CurrentActivityCard } from "@/components/cubiq/current-activity";
 import { DeviceVisual } from "@/components/cubiq/device-visual";
 import { PageHeader, SectionCard } from "@/components/cubiq/primitives";
+import { ProtectedRoute } from "@/components/cubiq/protected-route";
 import { ProductivityChart } from "@/components/cubiq/productivity-chart";
 import { StatCard } from "@/components/cubiq/stat-card";
 import { useDevice } from "@/lib/cubiq/device-store";
@@ -31,7 +32,7 @@ function Dashboard() {
   const open = mockTasks.filter((t) => t.status === "open").length;
 
   return (
-    <>
+    <ProtectedRoute>
       <PageHeader title="Dashboard" description="Rotate CUBIQ to choose a mode, then press START." />
       <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
         <CurrentActivityCard />
@@ -60,6 +61,6 @@ function Dashboard() {
           <ActivityTimeline sessions={sessions.slice(0, 6)} />
         </SectionCard>
       </div>
-    </>
+    </ProtectedRoute>
   );
 }

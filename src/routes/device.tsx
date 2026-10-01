@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import { DeviceVisual } from "@/components/cubiq/device-visual";
 import { PageHeader, SectionCard, StatusRow } from "@/components/cubiq/primitives";
+import { ProtectedRoute } from "@/components/cubiq/protected-route";
 import { Button } from "@/components/ui/button";
 import { modeLabel, orientationLabel, useDevice } from "@/lib/cubiq/device-store";
 
@@ -20,7 +21,7 @@ export const Route = createFileRoute("/device")({
 function DevicePage() {
   const { device, events, setConnected } = useDevice();
   return (
-    <>
+    <ProtectedRoute>
       <PageHeader
         title="Device Status"
         description={`${device.name} · last seen ${device.lastSeen}`}
@@ -60,6 +61,6 @@ function DevicePage() {
           </ul>
         )}
       </SectionCard>
-    </>
+    </ProtectedRoute>
   );
 }

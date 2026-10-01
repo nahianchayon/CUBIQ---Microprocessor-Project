@@ -2,6 +2,7 @@ import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 
 import { AiBadge, PageHeader, SectionCard } from "@/components/cubiq/primitives";
+import { ProtectedRoute } from "@/components/cubiq/protected-route";
 import { Checkbox } from "@/components/ui/checkbox";
 import { mockRecordings, mockSummaries, mockTasks } from "@/lib/cubiq/mock-data";
 import { cn } from "@/lib/utils";
@@ -27,8 +28,9 @@ const priorityStyle = {
 function InsightsPage() {
   const [tasks, setTasks] = useState(mockTasks);
   const titleOf = (id: string) => mockRecordings.find((r) => r.id === id)?.title ?? "Meeting";
+
   return (
-    <>
+    <ProtectedRoute>
       <PageHeader title="AI Insights" description="Summaries and tasks pulled from your meetings." action={<AiBadge />} />
       <div className="grid gap-6 lg:grid-cols-[1.3fr_1fr]">
         <div className="flex flex-col gap-4">
@@ -75,6 +77,6 @@ function InsightsPage() {
           </ul>
         </SectionCard>
       </div>
-    </>
+    </ProtectedRoute>
   );
 }

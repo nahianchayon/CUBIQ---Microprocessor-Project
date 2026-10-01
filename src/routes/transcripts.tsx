@@ -2,6 +2,7 @@ import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 
 import { EmptyState, PageHeader, SectionCard, StatusBadge } from "@/components/cubiq/primitives";
+import { ProtectedRoute } from "@/components/cubiq/protected-route";
 import { TranscriptViewer } from "@/components/cubiq/transcript-viewer";
 import { mockRecordings, mockTranscripts } from "@/lib/cubiq/mock-data";
 import { cn } from "@/lib/utils";
@@ -22,8 +23,9 @@ function TranscriptsPage() {
   const [selectedId, setSelectedId] = useState(mockTranscripts[0]?.id);
   const selected = mockTranscripts.find((t) => t.id === selectedId);
   const titleOf = (recId: string) => mockRecordings.find((r) => r.id === recId)?.title ?? "Recording";
+
   return (
-    <>
+    <ProtectedRoute>
       <PageHeader title="Transcripts" description="Generated on the device after each meeting." />
       <div className="grid gap-6 lg:grid-cols-[18rem_1fr]">
         <SectionCard title="All transcripts">
@@ -56,6 +58,6 @@ function TranscriptsPage() {
           )}
         </SectionCard>
       </div>
-    </>
+    </ProtectedRoute>
   );
 }

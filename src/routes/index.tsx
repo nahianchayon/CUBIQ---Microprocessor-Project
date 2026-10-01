@@ -2,6 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   Activity,
   ArrowRight,
+  Award,
+  CheckCircle2,
   Cpu,
   Github,
   LayoutDashboard,
@@ -12,6 +14,7 @@ import {
   Timer,
   UserPlus,
   Users,
+  Zap,
 } from "lucide-react";
 
 import { DeviceVisual } from "@/components/cubiq/device-visual";
@@ -45,7 +48,7 @@ function HomePage() {
   const { device, setOrientation, pressStart, pressStop, status } = useDevice();
 
   return (
-    <div className="flex flex-col gap-12 py-4">
+    <div className="flex flex-col gap-14 py-4">
       {/* 1. HERO SECTION */}
       <section className="relative overflow-hidden rounded-3xl border border-border bg-gradient-to-b from-card via-card/90 to-background p-6 sm:p-10 lg:p-14 shadow-xl">
         <div className="absolute -top-24 -right-24 size-96 rounded-full bg-primary/10 blur-3xl pointer-events-none" />
@@ -214,7 +217,81 @@ function HomePage() {
         </div>
       </section>
 
-      {/* 3. CORE FEATURES GRID */}
+      {/* 3. DEVELOPER PROFILE SECTION - NAHIAN RAHMAN CHAYON */}
+      <section className="relative overflow-hidden rounded-3xl border border-primary/20 bg-card p-6 sm:p-10 shadow-lg">
+        <div className="flex flex-col md:flex-row items-center gap-8 lg:gap-12">
+          {/* Developer Photo */}
+          <div className="relative shrink-0">
+            <div className="absolute -inset-1.5 rounded-full bg-gradient-to-r from-primary via-accent to-emerald-500 opacity-80 blur-md animate-pulse" />
+            <img
+              src="/developer-nahian.jpg"
+              alt="Nahian Rahman Chayon - CUBIQ Developer"
+              className="relative size-40 sm:size-48 lg:size-56 rounded-full object-cover border-4 border-background shadow-2xl"
+            />
+            <div className="absolute bottom-2 right-2 rounded-full bg-emerald-500 p-2 text-white shadow-lg border-2 border-background" title="Lead Architect">
+              <ShieldCheck className="size-5" />
+            </div>
+          </div>
+
+          {/* Developer Bio & Details */}
+          <div className="flex flex-col gap-4 text-center md:text-left flex-1">
+            <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary w-max mx-auto md:mx-0">
+              <Award className="size-3.5" />
+              <span>Developer & System Architect</span>
+            </div>
+
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-foreground">
+              Nahian Rahman Chayon
+            </h2>
+
+            <p className="text-sm sm:text-base font-medium text-primary">
+              Lead Microprocessor Engineer & Full-Stack System Architect
+            </p>
+
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Designed and developed the <strong>CUBIQ Microprocessor System</strong> — bridging physical hardware sensors with modern web technology, Firebase Realtime Database cloud synchronization, user authentication, and AI-driven productivity insights.
+            </p>
+
+            {/* Highlights */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+              <div className="flex items-center gap-2 text-xs font-medium text-foreground bg-secondary/50 p-2.5 rounded-xl border border-border">
+                <CheckCircle2 className="size-4 text-emerald-500 shrink-0" />
+                <span>Microprocessor & Hardware Integration</span>
+              </div>
+              <div className="flex items-center gap-2 text-xs font-medium text-foreground bg-secondary/50 p-2.5 rounded-xl border border-border">
+                <CheckCircle2 className="size-4 text-emerald-500 shrink-0" />
+                <span>Firebase Realtime Database & Firestore</span>
+              </div>
+              <div className="flex items-center gap-2 text-xs font-medium text-foreground bg-secondary/50 p-2.5 rounded-xl border border-border">
+                <CheckCircle2 className="size-4 text-emerald-500 shrink-0" />
+                <span>React, TypeScript & Tailwind CSS UI</span>
+              </div>
+              <div className="flex items-center gap-2 text-xs font-medium text-foreground bg-secondary/50 p-2.5 rounded-xl border border-border">
+                <CheckCircle2 className="size-4 text-emerald-500 shrink-0" />
+                <span>AI Session Recording & Transcription</span>
+              </div>
+            </div>
+
+            {/* Links / Contact CTA */}
+            <div className="flex items-center justify-center md:justify-start gap-4 pt-4 border-t border-border">
+              <Button variant="outline" size="sm" asChild className="gap-2">
+                <a href="https://github.com/nahianchayon/CUBIQ---Microprocessor-Project" target="_blank" rel="noopener noreferrer">
+                  <Github className="size-4" />
+                  GitHub Repository
+                </a>
+              </Button>
+              <Button size="sm" asChild className="gap-2">
+                <Link to="/dashboard">
+                  <Zap className="size-4" />
+                  View Live Project
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 4. CORE FEATURES GRID */}
       <section className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         <SectionCard title="Hardware Telemetry" action={<Cpu className="size-5 text-primary" />}>
           <p className="text-sm text-muted-foreground leading-relaxed">
@@ -253,7 +330,7 @@ function HomePage() {
         </SectionCard>
       </section>
 
-      {/* 4. SYSTEM NAVIGATION CARDS */}
+      {/* 5. SYSTEM NAVIGATION CARDS */}
       <section className="rounded-3xl border border-border bg-card p-6 sm:p-8">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-border">
           <div>
@@ -324,37 +401,6 @@ function HomePage() {
           </Link>
         </div>
       </section>
-
-      {/* 5. DEVELOPER BADGE - VERY SMALL & BOTTOM LEFT CORNER */}
-      <footer className="flex items-center justify-between gap-4 pt-4 border-t border-border/40">
-        <div className="flex items-center gap-3 rounded-2xl border border-border bg-card/90 p-2.5 shadow-sm max-w-xs hover:border-primary/40 transition-colors">
-          <div className="relative shrink-0">
-            <img
-              src="/developer-nahian.jpg"
-              alt="Nahian Rahman Chayon"
-              className="size-11 rounded-full object-cover border-2 border-primary shadow-sm"
-            />
-            <span className="absolute -bottom-0.5 -right-0.5 size-3 rounded-full bg-emerald-500 border-2 border-background" title="Developer" />
-          </div>
-          <div className="flex flex-col text-left overflow-hidden">
-            <span className="text-xs font-bold text-foreground truncate">Nahian Rahman Chayon</span>
-            <span className="text-[0.6875rem] text-primary font-medium truncate">Lead Developer & System Architect</span>
-            <a
-              href="https://github.com/nahianchayon/CUBIQ---Microprocessor-Project"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[0.625rem] text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1 mt-0.5"
-            >
-              <Github className="size-3 shrink-0" />
-              <span>GitHub Repo</span>
-            </a>
-          </div>
-        </div>
-
-        <p className="text-xs text-muted-foreground hidden sm:block">
-          CUBIQ Microprocessor Project &copy; {new Date().getFullYear()}
-        </p>
-      </footer>
     </div>
   );
 }

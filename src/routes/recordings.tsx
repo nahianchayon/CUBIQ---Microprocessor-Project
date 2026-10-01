@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { AudioPlayer } from "@/components/cubiq/audio-player";
 import { PageHeader, SectionCard, StatusBadge } from "@/components/cubiq/primitives";
+import { ProtectedRoute } from "@/components/cubiq/protected-route";
 import { formatDuration } from "@/lib/cubiq/format";
 import { mockRecordings } from "@/lib/cubiq/mock-data";
 
@@ -19,7 +20,7 @@ export const Route = createFileRoute("/recordings")({
 
 function RecordingsPage() {
   return (
-    <>
+    <ProtectedRoute>
       <PageHeader title="Recordings" description="Every meeting CUBIQ has captured." />
       <div className="grid gap-4">
         {mockRecordings.map((r) => (
@@ -44,6 +45,6 @@ function RecordingsPage() {
           </SectionCard>
         ))}
       </div>
-    </>
+    </ProtectedRoute>
   );
 }

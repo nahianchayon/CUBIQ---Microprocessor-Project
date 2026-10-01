@@ -5,15 +5,14 @@ import {
   BarChart3,
   Cpu,
   FileText,
+  Home,
   LayoutDashboard,
   LogIn,
   LogOut,
   Menu,
   Mic,
-  Moon,
   Settings,
   Sparkles,
-  Sun,
   Timer,
   UserPlus,
   X,
@@ -26,7 +25,8 @@ import { useDevice, modeLabel } from "@/lib/cubiq/device-store";
 import { cn } from "@/lib/utils";
 
 const mainNav = [
-  { to: "/", label: "Dashboard", icon: LayoutDashboard },
+  { to: "/", label: "Homepage", icon: Home },
+  { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/focus", label: "Focus", icon: Timer },
   { to: "/meetings", label: "Meetings", icon: Mic },
   { to: "/recordings", label: "Recordings", icon: Activity },
@@ -40,14 +40,11 @@ const deviceNav = [
   { to: "/settings", label: "Settings", icon: Settings },
 ] as const;
 
-const accountNav = [
-  { to: "/login", label: "Log In", icon: LogIn },
-  { to: "/signup", label: "Sign Up", icon: UserPlus },
-] as const;
-
-const mobileNav = [mainNav[0], mainNav[1], mainNav[2], mainNav[6], deviceNav[0]] as const;
+const mobileNav = [mainNav[1], mainNav[2], mainNav[3], mainNav[7], deviceNav[0]] as const;
 
 function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
+  const { user, logout } = useAuth();
+
   return (
     <nav className="flex flex-1 flex-col gap-6 px-3" aria-label="Main">
       <ul className="flex flex-col gap-1">
@@ -87,19 +84,21 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
       <div>
         <p className="label-caps px-3 pb-2">Account</p>
         <ul className="flex flex-col gap-1">
-          {accountNav.map((item) => (
-            <li key={item.to}>
-              <Link
-                to={item.to}
-                onClick={onNavigate}
-                activeProps={{ className: "bg-primary-soft text-accent-foreground" }}
-                className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+          {user ? (
+            <li>
+              <button
+                type="button"
+                onClick={() => {
+                  logout();
+                  if (onNavigate) onNavigate();
+                }}
+                className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-destructive transition-colors hover:bg-destructive/10"
               >
-                <item.icon aria-hidden className="size-4" />
-                {item.label}
-              </Link>
+                <LogOut className="size-4" />
+                Log Out
+              </button>
             </li>
-          ))}
+          ) : null}
         </ul>
       </div>
     </nav>
@@ -163,26 +162,29 @@ function DeviceSimulator() {
 export function AppShell({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
   const { device, status } = useDevice();
+  const { user, logout } = useAuth();
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Desktop sidebar */}
-      <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r border-sidebar-border bg-sidebar lg:flex">
-        <div className="px-5 py-5">
-          <Link to="/" aria-label="CUBIQ home">
-            <CubiqLogo />
-          </Link>
-          <p className="mt-2 text-[0.6875rem] uppercase tracking-[0.16em] text-muted-foreground">
-            Rotate · Place · Press · Work
-          </p>
-        </div>
-        <NavLinks />
-        <DeviceSimulator />
-        <ConnectedDeviceFooter />
-      </aside>
+      {/* Desktop sidebar - ONLY SHOWN WHEN USER IS LOGGED IN */}
+      {user ? (
+        <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r border-sidebar-border bg-sidebar lg:flex">
+          <div className="px-5 py-5">
+            <Link to="/" aria-label="CUBIQ home">
+              <CubiqLogo />
+            </Link>
+            <p className="mt-2 text-[0.6875rem] uppercase tracking-[0.16em] text-muted-foreground">
+              Rotate · Place · Press · Work
+            </p>
+          </div>
+          <NavLinks />
+          <DeviceSimulator />
+          <ConnectedDeviceFooter />
+        </aside>
+      ) : null}
 
-      {/* Mobile drawer */}
-      {open ? (
+      {/* Mobile drawer - ONLY SHOWN WHEN USER IS LOGGED IN */}
+      {user && open ? (
         <div className="fixed inset-0 z-50 lg:hidden">
           <button
             type="button"
@@ -204,38 +206,69 @@ export function AppShell({ children }: { children: ReactNode }) {
         </div>
       ) : null}
 
-      <div className="lg:pl-64">
+      <div className={cn(user ? "lg:pl-64" : "w-full")}>
+        {/* Sticky Header Bar */}
         <header className="sticky top-0 z-20 flex items-center justify-between gap-3 border-b border-border bg-background/85 px-4 py-3 backdrop-blur sm:px-6">
-          <div className="flex items-center gap-2">
-            <Button
-              size="icon"
-              variant="ghost"
-              className="lg:hidden"
-              aria-label="Open navigation"
-              onClick={() => setOpen(true)}
-            >
-              <Menu className="size-5" />
-            </Button>
-            <span className="lg:hidden">
+          <div className="flex items-center gap-3">
+            {user ? (
+              <Button
+                size="icon"
+                variant="ghost"
+                className="lg:hidden"
+                aria-label="Open navigation"
+                onClick={() => setOpen(true)}
+              >
+                <Menu className="size-5" />
+              </Button>
+            ) : null}
+            <Link to="/" aria-label="CUBIQ home">
               <CubiqLogo />
-            </span>
+            </Link>
           </div>
-          <div className="flex items-center gap-2">
-            {status === "recording" ? (
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-danger-soft px-2.5 py-1 text-xs font-semibold text-destructive">
+
+          <div className="flex items-center gap-3">
+            {user && status === "recording" ? (
+              <span className="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-danger-soft px-2.5 py-1 text-xs font-semibold text-destructive">
                 <span aria-hidden className="h-1.5 w-1.5 animate-pulse-dot rounded-full bg-destructive" />
                 RECORDING
               </span>
             ) : null}
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-600 dark:text-emerald-400">
-              <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              Firebase RTDB Live
-            </span>
-            <StatusBadge
-              health={device.connected ? "online" : "offline"}
-              label={device.connected ? "CUBIQ Connected" : "CUBIQ Offline"}
-              pulse={device.connected}
-            />
+
+            {user ? (
+              <StatusBadge
+                health={device.connected ? "online" : "offline"}
+                label={device.connected ? "CUBIQ Live" : "Offline"}
+                pulse={device.connected}
+                className="hidden sm:inline-flex"
+              />
+            ) : null}
+
+            {user ? (
+              <div className="flex items-center gap-2">
+                <span className="hidden md:inline-block text-xs text-muted-foreground font-medium truncate max-w-[140px]">
+                  {user.email}
+                </span>
+                <Button size="sm" variant="outline" onClick={logout} className="gap-1.5 text-xs">
+                  <LogOut className="size-3.5" />
+                  Log Out
+                </Button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Button size="sm" variant="ghost" asChild className="text-xs font-semibold">
+                  <Link to="/login">
+                    <LogIn className="size-3.5 mr-1" />
+                    Log In
+                  </Link>
+                </Button>
+                <Button size="sm" asChild className="text-xs font-semibold shadow-sm">
+                  <Link to="/signup">
+                    <UserPlus className="size-3.5 mr-1" />
+                    Sign Up
+                  </Link>
+                </Button>
+              </div>
+            )}
           </div>
         </header>
 
@@ -244,29 +277,30 @@ export function AppShell({ children }: { children: ReactNode }) {
         </main>
       </div>
 
-      {/* Mobile bottom navigation */}
-      <nav
-        aria-label="Primary"
-        className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-card/95 backdrop-blur sm:hidden"
-      >
-        <ul className="grid grid-cols-5">
-          {mobileNav.map((item) => (
-            <li key={item.to}>
-              <Link
-                to={item.to}
-                activeOptions={{ exact: item.to === "/" }}
-                activeProps={{ className: "text-accent-foreground" }}
-                className={cn(
-                  "flex flex-col items-center gap-1 py-2.5 text-[0.625rem] font-medium text-muted-foreground",
-                )}
-              >
-                <item.icon aria-hidden className="size-5" />
-                {item.label}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </nav>
+      {/* Mobile Bottom Navigation Bar - ONLY SHOWN WHEN USER IS LOGGED IN */}
+      {user ? (
+        <nav
+          aria-label="Primary"
+          className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-card/95 backdrop-blur sm:hidden"
+        >
+          <ul className="grid grid-cols-5">
+            {mobileNav.map((item) => (
+              <li key={item.to}>
+                <Link
+                  to={item.to}
+                  activeProps={{ className: "text-accent-foreground" }}
+                  className={cn(
+                    "flex flex-col items-center gap-1 py-2.5 text-[0.625rem] font-medium text-muted-foreground",
+                  )}
+                >
+                  <item.icon aria-hidden className="size-5" />
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      ) : null}
     </div>
   );
 }
