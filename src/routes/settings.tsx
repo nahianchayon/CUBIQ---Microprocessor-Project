@@ -2,7 +2,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import { toast } from "sonner";
 
 import { PageHeader, SectionCard } from "@/components/cubiq/primitives";
-import { ProtectedRoute } from "@/components/cubiq/protected-route";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -31,7 +30,7 @@ const toggles = [
 function SettingsPage() {
   const { device } = useDevice();
   return (
-    <ProtectedRoute>
+    <>
       <PageHeader title="Settings" description="Preferences for your device and app." />
       <SectionCard title="Device">
         <div className="grid gap-4 sm:grid-cols-2">
@@ -58,6 +57,6 @@ function SettingsPage() {
       <div>
         <Button onClick={() => toast.success("Settings saved")}>Save settings</Button>
       </div>
-    </ProtectedRoute>
+    </>
   );
 }
