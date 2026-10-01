@@ -32,12 +32,12 @@ export function CurrentActivityCard() {
 
       {mode === "idle" ? (
         <div className="mt-6">
-          <p className="font-display text-3xl font-extrabold tracking-[0.1em] text-foreground">IDLE</p>
-          <p className="mt-2 text-sm font-medium text-muted-foreground">No active session.</p>
-          <p className="mt-6 max-w-sm text-sm font-medium text-muted-foreground">
-            Place CUBIQ on a mode face to begin. Rotate &rarr; Place &rarr; Press START &rarr; Work.
+          <p className="font-display text-3xl font-bold tracking-[0.1em] text-foreground">IDLE</p>
+          <p className="mt-2 text-sm text-muted-foreground">No active session.</p>
+          <p className="mt-6 max-w-sm text-sm text-muted-foreground">
+            Place CUBIQ on a mode face to begin. Rotate → Place → Press START → Work.
           </p>
-          <Button asChild variant="outline" className="mt-6 rounded-xl font-bold backdrop-blur-md">
+          <Button asChild variant="outline" className="mt-6">
             <Link to="/device">
               <Cpu aria-hidden className="size-4" />
               View device
@@ -48,10 +48,10 @@ export function CurrentActivityCard() {
         <div className="mt-6 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <div className="min-w-0">
             <div className="flex items-center gap-3">
-              <p className="font-display text-2xl font-extrabold tracking-[0.12em] text-foreground">{headline}</p>
+              <p className="font-display text-2xl font-bold tracking-[0.12em] text-foreground">{headline}</p>
               {status === "recording" ? (
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-500/10 border border-rose-500/20 backdrop-blur-md px-2.5 py-1 text-xs font-bold text-rose-500">
-                  <span aria-hidden className="h-1.5 w-1.5 animate-pulse-dot rounded-full bg-rose-500" />
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-danger-soft px-2.5 py-1 text-xs font-semibold text-destructive">
+                  <span aria-hidden className="h-1.5 w-1.5 animate-pulse-dot rounded-full bg-destructive" />
                   RECORDING
                 </span>
               ) : (
@@ -62,12 +62,12 @@ export function CurrentActivityCard() {
               )}
             </div>
 
-            <p className={cn("timer-numeral mt-4 text-6xl font-extrabold text-foreground sm:text-7xl")}>{bigValue}</p>
+            <p className={cn("timer-numeral mt-4 text-6xl text-foreground sm:text-7xl")}>{bigValue}</p>
 
             {mode === "focus" ? (
               <div className="mt-5 max-w-sm">
                 <div
-                  className="h-2.5 w-full overflow-hidden rounded-full bg-secondary/80 border border-border/40 p-0.5 backdrop-blur-md"
+                  className="h-2 w-full overflow-hidden rounded-full bg-secondary"
                   role="progressbar"
                   aria-valuemin={0}
                   aria-valuemax={100}
@@ -75,14 +75,14 @@ export function CurrentActivityCard() {
                   aria-label="Focus session progress"
                 >
                   <div
-                    className="h-full rounded-full bg-gradient-to-r from-primary to-accent transition-[width] duration-1000 ease-linear shadow-xs"
+                    className="h-full rounded-full bg-primary transition-[width] duration-1000 ease-linear"
                     style={{ width: `${progress}%` }}
                   />
                 </div>
               </div>
             ) : null}
 
-            <p className="mt-4 text-sm font-medium text-muted-foreground">
+            <p className="mt-4 text-sm text-muted-foreground">
               {status === "ready"
                 ? `CUBIQ is positioned in ${headline.toLowerCase()} mode. Press START on the device.`
                 : status === "running"
@@ -97,12 +97,12 @@ export function CurrentActivityCard() {
 
           <div className="flex shrink-0 flex-col gap-2">
             {status === "running" || status === "recording" ? (
-              <Button onClick={pressStop} variant="destructive" className="rounded-xl font-bold">
+              <Button onClick={pressStop} variant="destructive">
                 <CircleStop aria-hidden className="size-4" />
                 {status === "recording" ? "Stop recording" : "Stop session"}
               </Button>
             ) : (
-              <Button asChild variant="outline" className="rounded-xl font-bold backdrop-blur-md">
+              <Button asChild variant="outline">
                 <Link to={mode === "focus" ? "/focus" : "/meetings"}>
                   <Radio aria-hidden className="size-4" />
                   {mode === "focus" ? "Open focus" : "Open meetings"}
