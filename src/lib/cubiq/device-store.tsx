@@ -23,6 +23,7 @@ import { toast } from "sonner";
 import { mockDevice, mockSessions } from "./mock-data";
 import { formatDuration } from "./format";
 import type { ActivityStatus, Device, DeviceMode, Orientation, Session } from "./types";
+import { rtdb, rtdbRef, onValue, set, push } from "../firebase";
 
 export const FOCUS_LENGTH_SECONDS = 25 * 60;
 
@@ -102,12 +103,36 @@ export function DeviceStoreProvider({ children }: { children: ReactNode }) {
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   const pushEvent = useCallback((type: DeviceEvent["type"], detail: string) => {
-    setEvents((prev) =>
-      [
-        { id: `${type}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`, type, detail, at: timeLabel(new Date()) },
-        ...prev,
-      ].slice(0, 20),
-    );
+    const eventItem = {
+      id: `${type}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+      type,
+      detail,
+      at: timeLabel(new Date()),
+    };
+    setEvents((prev) => [eventItem, ...prev].slice(0, 20));
+
+    if (rtdb) {
+      try {
+        push(rtdbRef(rtdb, "cubiq-01/events"), eventItem);
+      } catch (e) {
+        console.warn("RTDB event push error:", e);
+      }
+    }
+  }, []);
+
+  const syncStateToRtdb = useCallback((updatedOrientation: Orientation, updatedMode: DeviceMode, updatedStatus: ActivityStatus, isConnected: boolean) => {
+    if (!rtdb) return;
+    try {
+      set(rtdbRef(rtdb, "cubiq-01/state"), {
+        orientation: updatedOrientation,
+        mode: updatedMode,
+        status: updatedStatus,
+        connected: isConnected,
+        lastUpdated: new Date().toISOString(),
+      });
+    } catch (e) {
+      console.warn("RTDB state set error:", e);
+    }
   }, []);
 
   const clearTimers = useCallback(() => {
@@ -116,6 +141,53 @@ export function DeviceStoreProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => clearTimers, [clearTimers]);
+
+  // Subscribe to Firebase Realtime Database for live hardware state & sessions
+  useEffect(() => {
+    if (!rtdb) return;
+    try {
+      const stateRef = rtdbRef(rtdb, "cubiq-01/state");
+      const unsubscribeState = onValue(stateRef, (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          if (data.orientation && orientationToMode[data.orientation as Orientation]) {
+            const nextMode = orientationToMode[data.orientation as Orientation];
+            setDevice((prev) => ({
+              ...prev,
+              orientation: data.orientation as Orientation,
+              mode: nextMode,
+              connected: typeof data.connected === "boolean" ? data.connected : prev.connected,
+            }));
+          }
+          if (data.status) {
+            setStatus(data.status as ActivityStatus);
+          }
+        }
+      });
+
+      const sessionsRef = rtdbRef(rtdb, "cubiq-01/sessions");
+      const unsubscribeSessions = onValue(sessionsRef, (snapshot) => {
+        const data = snapshot.val();
+        if (data && typeof data === "object") {
+          const rtdbSessions: Session[] = Object.values(data);
+          if (rtdbSessions.length > 0) {
+            setSessions((prev) => {
+              const existingIds = new Set(prev.map((s) => s.id));
+              const newUnique = rtdbSessions.filter((s) => !existingIds.has(s.id));
+              return newUnique.length > 0 ? [...newUnique, ...prev] : prev;
+            });
+          }
+        }
+      });
+
+      return () => {
+        unsubscribeState();
+        unsubscribeSessions();
+      };
+    } catch (err) {
+      console.warn("RTDB subscription error:", err);
+    }
+  }, []);
 
   // Session / recording tick. The physical device owns the clock; this mirrors it.
   useEffect(() => {
@@ -129,14 +201,16 @@ export function DeviceStoreProvider({ children }: { children: ReactNode }) {
   const setOrientation = useCallback(
     (orientation: Orientation) => {
       const nextMode = orientationToMode[orientation];
+      const nextStatus = nextMode === "idle" ? "idle" : "ready";
       setDevice((prev) => ({ ...prev, orientation, mode: nextMode, connected: true }));
       pushEvent("ORIENTATION_CHANGED", orientationLabel[orientation]);
       pushEvent("MODE_CHANGED", modeLabel[nextMode]);
       setElapsedSeconds(0);
       setStartedAtLabel(null);
-      setStatus(nextMode === "idle" ? "idle" : "ready");
+      setStatus(nextStatus);
+      syncStateToRtdb(orientation, nextMode, nextStatus, true);
     },
-    [pushEvent],
+    [pushEvent, syncStateToRtdb],
   );
 
   const pressStart = useCallback(() => {
@@ -148,6 +222,7 @@ export function DeviceStoreProvider({ children }: { children: ReactNode }) {
     setElapsedSeconds(0);
     setStartedAtLabel(timeLabel(new Date()));
     setLastCompleted(null);
+    const newStatus = mode === "focus" ? "running" : "recording";
     if (mode === "focus") {
       setStatus("running");
       setPipeline("idle");
@@ -159,28 +234,37 @@ export function DeviceStoreProvider({ children }: { children: ReactNode }) {
       pushEvent("RECORDING_STARTED", "Meeting recording");
       toast.success("Meeting recording started");
     }
-  }, [mode, pushEvent, status]);
+    syncStateToRtdb(device.orientation, mode, newStatus, device.connected);
+  }, [device.connected, device.orientation, mode, pushEvent, status, syncStateToRtdb]);
 
   const pressStop = useCallback(() => {
     if (status !== "running" && status !== "recording") return;
     const duration = elapsedSeconds;
     const now = new Date();
     const wasRecording = status === "recording";
+    const newSession: Session = {
+      id: `s-live-${Date.now()}`,
+      type: wasRecording ? "meeting" : "focus",
+      title: wasRecording ? "Meeting Recording" : "Focus Session",
+      startTime: `Today · ${startedAtLabel ?? timeLabel(now)}`,
+      endTime: `Today · ${timeLabel(now)}`,
+      durationSeconds: duration,
+      status: "completed",
+      deviceId: device.id,
+    };
     setStatus("complete");
     setLastCompleted({ type: wasRecording ? "meeting" : "focus", durationSeconds: duration });
-    setSessions((prev) => [
-      {
-        id: `s-live-${Date.now()}`,
-        type: wasRecording ? "meeting" : "focus",
-        title: wasRecording ? "Meeting Recording" : "Focus Session",
-        startTime: `Today · ${startedAtLabel ?? timeLabel(now)}`,
-        endTime: `Today · ${timeLabel(now)}`,
-        durationSeconds: duration,
-        status: "completed",
-        deviceId: device.id,
-      },
-      ...prev,
-    ]);
+    setSessions((prev) => [newSession, ...prev]);
+
+    if (rtdb) {
+      try {
+        push(rtdbRef(rtdb, "cubiq-01/sessions"), newSession);
+      } catch (e) {
+        console.warn("RTDB session push error:", e);
+      }
+    }
+
+    syncStateToRtdb(device.orientation, mode, "complete", device.connected);
 
     if (wasRecording) {
       pushEvent("RECORDING_STOPPED", `Saved ${formatDuration(duration)}`);
@@ -208,7 +292,7 @@ export function DeviceStoreProvider({ children }: { children: ReactNode }) {
       pushEvent("SESSION_STOPPED", `Focus session · ${formatDuration(duration)}`);
       toast.success("Focus session complete");
     }
-  }, [device.id, elapsedSeconds, pushEvent, startedAtLabel, status]);
+  }, [device.connected, device.id, device.orientation, elapsedSeconds, mode, pushEvent, startedAtLabel, status, syncStateToRtdb]);
 
   const setConnected = useCallback(
     (connected: boolean) => {
@@ -222,6 +306,7 @@ export function DeviceStoreProvider({ children }: { children: ReactNode }) {
         microphoneStatus: connected ? "ready" : "inactive",
         mpuStatus: connected ? "ready" : "inactive",
       }));
+      syncStateToRtdb(device.orientation, device.mode, status, connected);
       if (connected) {
         pushEvent("DEVICE_CONNECTED", "CUBIQ-01 online");
         toast.success("CUBIQ connected");
@@ -234,7 +319,7 @@ export function DeviceStoreProvider({ children }: { children: ReactNode }) {
         toast.warning("CUBIQ disconnected");
       }
     },
-    [clearTimers, pushEvent],
+    [clearTimers, device.mode, device.orientation, pushEvent, status, syncStateToRtdb],
   );
 
   const remainingSeconds = mode === "focus" ? Math.max(0, FOCUS_LENGTH_SECONDS - elapsedSeconds) : 0;
