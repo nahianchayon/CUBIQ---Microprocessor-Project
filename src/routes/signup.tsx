@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { User, Mail, Lock, Eye, EyeOff, UserPlus, ArrowRight, ShieldCheck, Sparkles } from "lucide-react";
+import { UserPlus, ArrowRight } from "lucide-react";
 
 import { CubiqLogo } from "@/components/cubiq/primitives";
 import { Button } from "@/components/ui/button";
@@ -12,24 +12,23 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/signup")({
   head: () => ({
     meta: [
-      { title: "Sign Up — CUBIQ Companion" },
-      { name: "description", content: "Create your CUBIQ Focus & Meeting Companion account." },
-      { property: "og:title", content: "Sign Up — CUBIQ Companion" },
-      { property: "og:description", content: "Create your CUBIQ Focus & Meeting Companion account." },
+      { title: "Sign Up — CUBIQ" },
+      { name: "description", content: "Create your CUBIQ account." },
+      { property: "og:title", content: "Sign Up — CUBIQ" },
+      { property: "og:description", content: "Create your CUBIQ account." },
     ],
   }),
   component: SignupPage,
 });
 
 function SignupPage() {
-  const { signup, isFirebaseActive } = useAuth();
+  const { signup } = useAuth();
   const navigate = useNavigate();
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -39,70 +38,55 @@ function SignupPage() {
       return;
     }
     setSubmitting(true);
-    const success = await signup(name, email, password);
+    const success = await signup(name || "User", email, password);
     setSubmitting(false);
     if (success) {
-      navigate({ to: "/" });
-    }
-  };
-
-  const handleQuickSignup = async () => {
-    setSubmitting(true);
-    const dummyEmail = `newuser${Math.floor(Math.random() * 900 + 100)}@cubiq.com`;
-    const success = await signup("New Operator", dummyEmail, "password123");
-    setSubmitting(false);
-    if (success) {
-      navigate({ to: "/" });
+      navigate({ to: "/dashboard" });
     }
   };
 
   return (
-    <div className="min-h-screen grid place-items-center bg-background px-4 py-12">
-      <div className="w-full max-w-md space-y-6 animate-rise">
-        {/* Logo & Header */}
-        <div className="flex flex-col items-center text-center space-y-2">
-          <Link to="/" aria-label="CUBIQ home">
-            <CubiqLogo />
-          </Link>
-          <h1 className="font-display text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl pt-2">
-            Create CUBIQ Account
-          </h1>
-          <p className="text-sm text-muted-foreground max-w-xs">
-            Connect your device, track focus sessions, and process meeting speech transcripts.
-          </p>
-        </div>
-
-        {/* Quick Instant Dummy Signup Banner */}
-        <div className="rounded-2xl border border-primary/20 bg-primary-soft/40 p-3.5 space-y-2 text-xs">
-          <div className="flex items-center justify-between font-bold text-primary">
-            <span className="flex items-center gap-1.5">
-              <Sparkles className="size-3.5" /> 1-Click Fast Signup
-            </span>
-            <span className="text-[0.625rem] uppercase tracking-wider bg-primary/10 px-2 py-0.5 rounded-md border border-primary/20">
-              Dummy Account
-            </span>
+    <div className="min-h-screen grid place-items-center bg-background px-4 py-8">
+      <div className="w-full max-w-4xl overflow-hidden rounded-3xl border border-border bg-card shadow-2xl grid lg:grid-cols-2">
+        {/* Left Side: CUBIQ Hardware Device Photo */}
+        <div className="relative hidden lg:flex flex-col items-center justify-center p-8 bg-gradient-to-br from-primary/10 via-card to-background border-r border-border">
+          <div className="flex flex-col items-center text-center gap-4">
+            <Link to="/" aria-label="CUBIQ home">
+              <CubiqLogo />
+            </Link>
+            <div className="relative overflow-hidden rounded-2xl border-2 border-primary/30 p-2 shadow-xl bg-card">
+              <img
+                src="/cubiq-hardware-cube.jpg"
+                alt="CUBIQ Microprocessor Cube"
+                className="w-full max-w-[280px] h-auto object-cover rounded-xl shadow-inner"
+              />
+            </div>
+            <p className="text-sm font-bold text-foreground">CUBIQ Smart Microprocessor System</p>
+            <p className="text-xs text-muted-foreground max-w-xs">
+              Physical gesture-controlled hardware device with cloud AI session analytics.
+            </p>
           </div>
-          <p className="text-muted-foreground text-[0.6875rem]">
-            Test immediately with an auto-generated dummy profile or fill in your details below:
-          </p>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={handleQuickSignup}
-            disabled={submitting}
-            className="w-full rounded-xl font-bold bg-card border-primary/30 text-primary hover:bg-primary-soft text-xs h-8"
-          >
-            Create Instant Dummy Account
-          </Button>
         </div>
 
-        {/* Signup Form Card */}
-        <div className="surface p-6 sm:p-8 space-y-6 shadow-raised">
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-1.5">
-              <Label htmlFor="name" className="text-xs font-bold text-foreground flex items-center gap-1.5">
-                <User className="size-3.5 text-primary" />
+        {/* Right Side: Clean Signup Form */}
+        <div className="flex flex-col justify-center p-6 sm:p-10 space-y-6">
+          <div className="flex flex-col space-y-2 text-left">
+            <div className="lg:hidden pb-2">
+              <Link to="/" aria-label="CUBIQ home">
+                <CubiqLogo />
+              </Link>
+            </div>
+            <h1 className="font-display text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl">
+              Sign Up
+            </h1>
+            <p className="text-xs text-muted-foreground">
+              Fill in your details to create a new CUBIQ account.
+            </p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-3.5">
+            <div className="space-y-1">
+              <Label htmlFor="name" className="text-xs font-bold text-foreground">
                 Full Name
               </Label>
               <Input
@@ -112,13 +96,12 @@ function SignupPage() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Alex Johnson"
-                className="rounded-xl bg-card border-border h-11 text-sm font-medium"
+                className="rounded-xl bg-background border-border h-10 text-sm font-medium"
               />
             </div>
 
-            <div className="space-y-1.5">
-              <Label htmlFor="email" className="text-xs font-bold text-foreground flex items-center gap-1.5">
-                <Mail className="size-3.5 text-primary" />
+            <div className="space-y-1">
+              <Label htmlFor="email" className="text-xs font-bold text-foreground">
                 Email Address
               </Label>
               <Input
@@ -127,50 +110,38 @@ function SignupPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="alex@company.com"
-                className="rounded-xl bg-card border-border h-11 text-sm font-medium"
+                placeholder="name@company.com"
+                className="rounded-xl bg-background border-border h-10 text-sm font-medium"
               />
             </div>
 
-            <div className="space-y-1.5">
-              <Label htmlFor="password" className="text-xs font-bold text-foreground flex items-center gap-1.5">
-                <Lock className="size-3.5 text-primary" />
+            <div className="space-y-1">
+              <Label htmlFor="password" className="text-xs font-bold text-foreground">
                 Password
               </Label>
-              <div className="relative">
-                <Input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Create password..."
-                  className="rounded-xl bg-card border-border h-11 text-sm font-medium pr-10"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                  aria-label={showPassword ? "Hide password" : "Show password"}
-                >
-                  {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-                </button>
-              </div>
+              <Input
+                id="password"
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Create password"
+                className="rounded-xl bg-background border-border h-10 text-sm font-medium"
+              />
             </div>
 
-            <div className="space-y-1.5">
-              <Label htmlFor="confirmPassword" className="text-xs font-bold text-foreground flex items-center gap-1.5">
-                <Lock className="size-3.5 text-primary" />
+            <div className="space-y-1">
+              <Label htmlFor="confirmPassword" className="text-xs font-bold text-foreground">
                 Confirm Password
               </Label>
               <Input
                 id="confirmPassword"
-                type={showPassword ? "text" : "password"}
+                type="password"
                 required
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Confirm password..."
-                className="rounded-xl bg-card border-border h-11 text-sm font-medium"
+                placeholder="Confirm password"
+                className="rounded-xl bg-background border-border h-10 text-sm font-medium"
               />
             </div>
 
@@ -184,28 +155,20 @@ function SignupPage() {
                 "Creating Account..."
               ) : (
                 <span className="flex items-center justify-center gap-2">
-                  <UserPlus className="size-4" /> Create CUBIQ Account <ArrowRight className="size-4" />
+                  <UserPlus className="size-4" /> Sign Up <ArrowRight className="size-4" />
                 </span>
               )}
             </Button>
           </form>
 
-          {/* Connection Mode Footer */}
-          <div className="pt-2 border-t border-border/50 text-center text-xs text-muted-foreground flex items-center justify-center gap-1.5">
-            <ShieldCheck className="size-3.5 text-success" />
-            <span>
-              {isFirebaseActive ? "Syncs with Firebase Authentication" : "Offline Dummy Authentication Active"}
-            </span>
+          {/* Already Have an Account? Log In Option */}
+          <div className="pt-3 border-t border-border text-center text-xs text-muted-foreground">
+            Already have an account?{" "}
+            <Link to="/login" className="font-bold text-primary hover:underline ml-1">
+              Log In
+            </Link>
           </div>
         </div>
-
-        {/* Link to Login */}
-        <p className="text-center text-xs font-medium text-muted-foreground">
-          Already have an account?{" "}
-          <Link to="/login" className="font-bold text-primary hover:underline">
-            Sign in instead
-          </Link>
-        </p>
       </div>
     </div>
   );
