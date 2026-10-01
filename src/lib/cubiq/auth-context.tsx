@@ -86,7 +86,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           localStorage.setItem(DUMMY_STORAGE_KEY, JSON.stringify(defaultDemo));
         }
       } else {
-        setUser(null);
+        const defaultDemo: UserProfile = {
+          uid: "demo-user-101",
+          email: "demo@cubiq.com",
+          displayName: "Demo Operator",
+          isDummy: true,
+        };
+        setUser(defaultDemo);
+        localStorage.setItem(DUMMY_STORAGE_KEY, JSON.stringify(defaultDemo));
       }
       setLoading(false);
     }
