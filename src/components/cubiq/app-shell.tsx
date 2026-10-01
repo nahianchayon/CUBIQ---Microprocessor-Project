@@ -27,6 +27,7 @@ import { useDevice, modeLabel } from "@/lib/cubiq/device-store";
 import { cn } from "@/lib/utils";
 
 const mainNav = [
+  { to: "/", label: "Homepage", icon: Home },
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/focus", label: "Focus", icon: Timer },
   { to: "/meetings", label: "Meetings", icon: Mic },
@@ -41,7 +42,7 @@ const deviceNav = [
   { to: "/settings", label: "Settings", icon: Settings },
 ] as const;
 
-const mobileNav = [mainNav[0], mainNav[1], mainNav[2], mainNav[6], deviceNav[0]] as const;
+const mobileNav = [mainNav[1], mainNav[2], mainNav[3], mainNav[7], deviceNav[0]] as const;
 
 function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
   const { user, logout } = useAuth();
@@ -54,8 +55,9 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
             <Link
               to={item.to}
               onClick={onNavigate}
-              activeProps={{ className: "bg-primary-soft text-accent-foreground font-semibold shadow-xs" }}
-              className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-muted-foreground transition-all hover:bg-secondary/70 hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+              activeOptions={{ exact: item.to === "/" }}
+              activeProps={{ className: "bg-primary-soft text-accent-foreground font-semibold" }}
+              className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
             >
               <item.icon aria-hidden className="size-4" />
               {item.label}
@@ -71,8 +73,8 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
               <Link
                 to={item.to}
                 onClick={onNavigate}
-                activeProps={{ className: "bg-primary-soft text-accent-foreground font-semibold shadow-xs" }}
-                className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-muted-foreground transition-all hover:bg-secondary/70 hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                activeProps={{ className: "bg-primary-soft text-accent-foreground font-semibold" }}
+                className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
               >
                 <item.icon aria-hidden className="size-4" />
                 {item.label}
@@ -92,7 +94,7 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
                   logout();
                   if (onNavigate) onNavigate();
                 }}
-                className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-destructive transition-colors hover:bg-destructive/10"
+                className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-destructive transition-colors hover:bg-destructive/10"
               >
                 <LogOut className="size-4" />
                 Log Out
@@ -108,9 +110,9 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
 function ConnectedDeviceFooter() {
   const { device } = useDevice();
   return (
-    <div className="m-3 rounded-2xl border border-border/50 bg-secondary/40 backdrop-blur-md p-3.5 shadow-xs">
+    <div className="m-3 rounded-xl border border-border bg-secondary/60 p-3">
       <p className="label-caps">Connected device</p>
-      <p className="mt-1 text-sm font-bold text-foreground font-display">{device.name}</p>
+      <p className="mt-1 text-sm font-semibold text-foreground">{device.name}</p>
       <StatusBadge
         className="mt-2"
         health={device.connected ? "online" : "offline"}
@@ -125,27 +127,27 @@ function DeviceSimulator() {
   const { setOrientation, pressStart, pressStop, device, status } = useDevice();
   if (!import.meta.env.DEV) return null;
   return (
-    <div className="m-3 rounded-2xl border border-dashed border-border/60 bg-card/40 backdrop-blur-md p-3">
+    <div className="m-3 rounded-xl border border-dashed border-border p-3">
       <p className="label-caps">Simulate device</p>
       <div className="mt-2 grid grid-cols-3 gap-1.5">
-        <Button size="sm" variant="outline" className="text-xs rounded-lg" onClick={() => setOrientation("face-down")}>
+        <Button size="sm" variant="outline" className="text-xs" onClick={() => setOrientation("face-down")}>
           Idle
         </Button>
-        <Button size="sm" variant="outline" className="text-xs rounded-lg" onClick={() => setOrientation("focus-up")}>
+        <Button size="sm" variant="outline" className="text-xs" onClick={() => setOrientation("focus-up")}>
           Focus
         </Button>
-        <Button size="sm" variant="outline" className="text-xs rounded-lg" onClick={() => setOrientation("meeting-up")}>
+        <Button size="sm" variant="outline" className="text-xs" onClick={() => setOrientation("meeting-up")}>
           Meeting
         </Button>
       </div>
       <div className="mt-1.5 grid grid-cols-2 gap-1.5">
-        <Button size="sm" className="text-xs rounded-lg font-bold" onClick={pressStart} disabled={status === "running" || status === "recording"}>
+        <Button size="sm" className="text-xs" onClick={pressStart} disabled={status === "running" || status === "recording"}>
           START
         </Button>
         <Button
           size="sm"
           variant="destructive"
-          className="text-xs rounded-lg font-bold"
+          className="text-xs"
           onClick={pressStop}
           disabled={status !== "running" && status !== "recording"}
         >
@@ -191,9 +193,9 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-screen bg-background text-foreground transition-colors duration-200">
-      {/* Desktop Liquid Glass Sidebar - ONLY SHOWN WHEN USER IS LOGGED IN */}
+      {/* Desktop sidebar - ONLY SHOWN WHEN USER IS LOGGED IN */}
       {user ? (
-        <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r border-border/50 bg-card/65 backdrop-blur-2xl lg:flex shadow-[4px_0_24px_rgba(0,0,0,0.03)] dark:shadow-[4px_0_32px_rgba(0,0,0,0.35)]">
+        <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r border-sidebar-border bg-sidebar lg:flex">
           <div className="px-5 py-5 flex items-center justify-between">
             <Link to="/" aria-label="CUBIQ home">
               <CubiqLogo />
@@ -212,9 +214,9 @@ export function AppShell({ children }: { children: ReactNode }) {
             type="button"
             aria-label="Close navigation"
             onClick={() => setOpen(false)}
-            className="absolute inset-0 bg-background/60 backdrop-blur-sm"
+            className="absolute inset-0 bg-foreground/40"
           />
-          <div className="relative flex h-full w-72 flex-col bg-card/85 backdrop-blur-2xl border-r border-border/60 pb-4 shadow-2xl">
+          <div className="relative flex h-full w-72 flex-col bg-sidebar pb-4">
             <div className="flex items-center justify-between px-5 py-5">
               <CubiqLogo />
               <Button size="icon" variant="ghost" aria-label="Close navigation" onClick={() => setOpen(false)}>
@@ -229,8 +231,8 @@ export function AppShell({ children }: { children: ReactNode }) {
       ) : null}
 
       <div className={cn(user ? "lg:pl-64" : "w-full")}>
-        {/* Sticky Frosted Liquid Glass Header Bar */}
-        <header className="sticky top-0 z-20 flex items-center justify-between gap-3 border-b border-border/50 bg-background/70 px-4 py-3 backdrop-blur-xl sm:px-6 shadow-xs">
+        {/* Sticky Header Bar */}
+        <header className="sticky top-0 z-20 flex items-center justify-between gap-3 border-b border-border bg-background/85 px-4 py-3 backdrop-blur sm:px-6">
           {/* Top Left Header Area: CUBIQ Logo + Dark Mode Button on Right Side of CUBIQ Logo */}
           <div className="flex items-center gap-2 sm:gap-3">
             {user ? (
@@ -256,7 +258,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               variant="outline"
               aria-label="Toggle Dark Mode"
               onClick={toggleTheme}
-              className="size-8 rounded-xl border-border/80 bg-card/80 backdrop-blur-md text-foreground hover:bg-secondary shrink-0 shadow-xs ml-0.5"
+              className="size-8 rounded-lg border-border bg-card text-foreground hover:bg-secondary shrink-0 shadow-xs ml-0.5"
               title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
             >
               {isDark ? <Sun className="size-4 text-warning" /> : <Moon className="size-4 text-primary" />}
@@ -266,7 +268,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           {/* Top Right Header Area */}
           <div className="flex items-center gap-3">
             {user && status === "recording" ? (
-              <span className="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-danger-soft/80 backdrop-blur-md px-2.5 py-1 text-xs font-semibold text-destructive">
+              <span className="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-danger-soft px-2.5 py-1 text-xs font-semibold text-destructive">
                 <span aria-hidden className="h-1.5 w-1.5 animate-pulse-dot rounded-full bg-destructive" />
                 RECORDING
               </span>
@@ -286,20 +288,20 @@ export function AppShell({ children }: { children: ReactNode }) {
                 <span className="hidden md:inline-block text-xs text-muted-foreground font-medium truncate max-w-[140px]">
                   {user.email}
                 </span>
-                <Button size="sm" variant="outline" onClick={logout} className="gap-1.5 text-xs rounded-xl backdrop-blur-md bg-card/70">
+                <Button size="sm" variant="outline" onClick={logout} className="gap-1.5 text-xs">
                   <LogOut className="size-3.5" />
                   Log Out
                 </Button>
               </div>
             ) : (
               <div className="flex items-center gap-2">
-                <Button size="sm" variant="ghost" asChild className="text-xs font-semibold rounded-xl">
+                <Button size="sm" variant="ghost" asChild className="text-xs font-semibold">
                   <Link to="/login">
                     <LogIn className="size-3.5 mr-1" />
                     Log In
                   </Link>
                 </Button>
-                <Button size="sm" asChild className="text-xs font-semibold shadow-sm rounded-xl">
+                <Button size="sm" asChild className="text-xs font-semibold shadow-sm">
                   <Link to="/signup">
                     <UserPlus className="size-3.5 mr-1" />
                     Sign Up
@@ -316,7 +318,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
         {/* Small Developer Badge in Bottom Right Corner */}
         <footer className="mx-auto w-full max-w-6xl px-4 pb-6 sm:px-6 flex items-center justify-between border-t border-border/40 pt-4">
-          <p className="text-[0.6875rem] text-muted-foreground hidden sm:block font-medium">
+          <p className="text-[0.6875rem] text-muted-foreground hidden sm:block">
             CUBIQ Microprocessor Project &copy; {new Date().getFullYear()}
           </p>
 
@@ -325,7 +327,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             href="https://github.com/nahianchayon/CUBIQ---Microprocessor-Project"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 rounded-xl border border-border/60 bg-card/75 backdrop-blur-md px-2.5 py-1.5 shadow-xs hover:border-primary/50 transition-all ml-auto sm:ml-0"
+            className="flex items-center gap-2 rounded-xl border border-border/80 bg-card/90 px-2.5 py-1.5 shadow-xs hover:border-primary/40 transition-colors ml-auto sm:ml-0"
             title="Developer: Nahian Rahman Chayon"
           >
             <img
@@ -334,7 +336,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               className="size-6 rounded-full object-cover border border-primary shrink-0"
             />
             <div className="flex flex-col text-left leading-none">
-              <span className="text-[0.6875rem] font-bold text-foreground font-display">
+              <span className="text-[0.6875rem] font-bold text-foreground">
                 Nahian Rahman Chayon
               </span>
               <span className="text-[0.5625rem] text-muted-foreground font-medium mt-0.5">
@@ -349,16 +351,16 @@ export function AppShell({ children }: { children: ReactNode }) {
       {user ? (
         <nav
           aria-label="Primary"
-          className="fixed inset-x-3 bottom-3 z-30 rounded-2xl border border-border/60 bg-card/80 backdrop-blur-xl sm:hidden shadow-2xl overflow-hidden"
+          className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-card/95 backdrop-blur sm:hidden"
         >
           <ul className="grid grid-cols-5">
             {mobileNav.map((item) => (
               <li key={item.to}>
                 <Link
                   to={item.to}
-                  activeProps={{ className: "text-primary font-bold" }}
+                  activeProps={{ className: "text-accent-foreground font-semibold" }}
                   className={cn(
-                    "flex flex-col items-center gap-1 py-2.5 text-[0.625rem] font-medium text-muted-foreground transition-colors hover:text-foreground",
+                    "flex flex-col items-center gap-1 py-2.5 text-[0.625rem] font-medium text-muted-foreground",
                   )}
                 >
                   <item.icon aria-hidden className="size-5" />
