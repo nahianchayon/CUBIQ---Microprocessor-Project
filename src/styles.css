@@ -230,33 +230,62 @@
   }
 }
 
-/* Custom Utilities */
+/* Apple Liquid Glass Utilities */
 @utility surface {
-  background-color: var(--color-card);
-  border: 1px solid var(--color-border);
+  background-color: color-mix(in oklab, var(--color-card) 75%, transparent);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid color-mix(in oklab, var(--color-border) 60%, transparent);
   border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-card);
-  transition: box-shadow 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 8px 32px 0 oklch(0.20 0.03 265 / 0.06), inset 0 1px 0 0 oklch(1 0 0 / 0.6);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dark .surface {
+  background-color: color-mix(in oklab, var(--color-card) 60%, transparent);
+  border: 1px solid oklch(0.98 0.005 260 / 0.12);
+  box-shadow: 0 10px 32px 0 oklch(0 0 0 / 0.4), inset 0 1px 0 0 oklch(1 0 0 / 0.12);
 }
 
 @utility surface-hover {
-  background-color: var(--color-card);
-  border: 1px solid var(--color-border);
+  background-color: color-mix(in oklab, var(--color-card) 75%, transparent);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid color-mix(in oklab, var(--color-border) 60%, transparent);
   border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-card);
+  box-shadow: 0 8px 32px 0 oklch(0.20 0.03 265 / 0.06), inset 0 1px 0 0 oklch(1 0 0 / 0.6);
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   &:hover {
-    border-color: oklch(0.50 0.19 272 / 0.35);
-    box-shadow: var(--shadow-hover);
+    background-color: color-mix(in oklab, var(--color-card) 90%, transparent);
+    border-color: oklch(0.50 0.19 272 / 0.45);
+    box-shadow: 0 16px 40px -10px oklch(0.50 0.19 272 / 0.25), inset 0 1px 0 0 oklch(1 0 0 / 0.8);
     transform: translateY(-2px);
   }
 }
 
+.dark .surface-hover {
+  background-color: color-mix(in oklab, var(--color-card) 60%, transparent);
+  border: 1px solid oklch(0.98 0.005 260 / 0.12);
+  box-shadow: 0 10px 32px 0 oklch(0 0 0 / 0.4), inset 0 1px 0 0 oklch(1 0 0 / 0.12);
+  &:hover {
+    background-color: color-mix(in oklab, var(--color-card) 78%, transparent);
+    border-color: oklch(0.68 0.18 275 / 0.5);
+    box-shadow: 0 16px 40px -10px oklch(0.68 0.18 275 / 0.3), inset 0 1px 0 0 oklch(1 0 0 / 0.2);
+  }
+}
+
 @utility glass-panel {
-  background: oklch(1 0 0 / 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid oklch(0.92 0.008 262 / 0.8);
+  background: color-mix(in oklab, var(--color-card) 70%, transparent);
+  backdrop-filter: blur(24px) saturate(190%);
+  -webkit-backdrop-filter: blur(24px) saturate(190%);
+  border: 1px solid color-mix(in oklab, var(--color-border) 60%, transparent);
+  box-shadow: 0 12px 40px 0 oklch(0.20 0.03 265 / 0.08), inset 0 1px 0 0 oklch(1 0 0 / 0.6);
+}
+
+.dark .glass-panel {
+  background: color-mix(in oklab, var(--color-card) 55%, transparent);
+  border: 1px solid oklch(0.98 0.005 260 / 0.14);
+  box-shadow: 0 16px 48px 0 oklch(0 0 0 / 0.5), inset 0 1px 0 0 oklch(1 0 0 / 0.14);
 }
 
 @utility label-caps {
