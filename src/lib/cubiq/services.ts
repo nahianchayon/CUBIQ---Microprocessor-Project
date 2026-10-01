@@ -1,53 +1,63 @@
+// Thin service layer. Today every function resolves mock data; each one maps
+// 1:1 to a backend endpoint so swapping in the real Raspberry Pi API is a
+// single-file change.
+//
+// TODO(api): GET  /api/device/status      -> deviceService.getStatus
+// TODO(api): POST /api/session/start      -> sessionService.start
+// TODO(api): POST /api/session/stop       -> sessionService.stop
+// TODO(api): GET  /api/sessions           -> sessionService.list
+// TODO(api): GET  /api/recordings         -> recordingService.list
+// TODO(api): GET  /api/transcripts        -> transcriptService.list
+// TODO(api): GET  /api/productivity       -> productivityService.list
+// TODO(api): GET  /api/ai/insights        -> aiService.getInsights
+
 import {
-  fetchUserSessions,
-  fetchUserRecordings,
-  fetchUserTranscripts,
-  fetchUserSummaries,
-  fetchUserTasks,
-  fetchUserProductivity,
-} from "./firestore-service";
-import { mockDevice } from "./mock-data";
+  mockDevice,
+  mockProductivity,
+  mockRecordings,
+  mockSessions,
+  mockSummaries,
+  mockTasks,
+  mockTranscripts,
+} from "./mock-data";
 import type { Device, ProductivityDay, Recording, Session, Summary, Task, Transcript } from "./types";
 
+const latency = <T>(value: T, ms = 240): Promise<T> =>
+  new Promise((resolve) => setTimeout(() => resolve(value), ms));
+
 export const deviceService = {
-  getStatus: (): Promise<Device> => Promise.resolve(mockDevice),
+  getStatus: (): Promise<Device> => latency(mockDevice),
 };
 
 export const sessionService = {
-  list: (userId = "demo-user"): Promise<Session[]> => fetchUserSessions(userId),
+  list: (): Promise<Session[]> => latency(mockSessions),
   start: (type: Session["type"]): Promise<{ accepted: boolean; type: Session["type"] }> =>
-    Promise.resolve({ accepted: true, type }),
-  stop: (): Promise<{ accepted: boolean }> => Promise.resolve({ accepted: true }),
+    latency({ accepted: true, type }, 120),
+  stop: (): Promise<{ accepted: boolean }> => latency({ accepted: true }, 120),
 };
 
 export const recordingService = {
-  list: (userId = "demo-user"): Promise<Recording[]> => fetchUserRecordings(userId),
-  get: async (id: string, userId = "demo-user"): Promise<Recording | undefined> => {
-    const list = await fetchUserRecordings(userId);
-    return list.find((r) => r.id === id);
-  },
+  list: (): Promise<Recording[]> => latency(mockRecordings),
+  get: (id: string): Promise<Recording | undefined> =>
+    latency(mockRecordings.find((r) => r.id === id)),
 };
 
 export const transcriptService = {
-  list: (userId = "demo-user"): Promise<Transcript[]> => fetchUserTranscripts(userId),
-  get: async (id: string, userId = "demo-user"): Promise<Transcript | undefined> => {
-    const list = await fetchUserTranscripts(userId);
-    return list.find((t) => t.id === id);
-  },
+  list: (): Promise<Transcript[]> => latency(mockTranscripts),
+  get: (id: string): Promise<Transcript | undefined> =>
+    latency(mockTranscripts.find((t) => t.id === id)),
 };
 
 export const summaryService = {
-  list: (userId = "demo-user"): Promise<Summary[]> => fetchUserSummaries(userId),
-  getByRecording: async (recordingId: string, userId = "demo-user"): Promise<Summary | undefined> => {
-    const list = await fetchUserSummaries(userId);
-    return list.find((s) => s.recordingId === recordingId);
-  },
+  list: (): Promise<Summary[]> => latency(mockSummaries),
+  getByRecording: (recordingId: string): Promise<Summary | undefined> =>
+    latency(mockSummaries.find((s) => s.recordingId === recordingId)),
 };
 
 export const productivityService = {
-  list: (userId = "demo-user"): Promise<ProductivityDay[]> => fetchUserProductivity(userId),
+  list: (): Promise<ProductivityDay[]> => latency(mockProductivity),
 };
 
 export const aiService = {
-  getTasks: (userId = "demo-user"): Promise<Task[]> => fetchUserTasks(userId),
+  getTasks: (): Promise<Task[]> => latency(mockTasks),
 };

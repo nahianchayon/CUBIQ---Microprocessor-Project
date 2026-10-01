@@ -14,7 +14,6 @@ import {
 } from "firebase/auth";
 import { toast } from "sonner";
 import { firebaseAuth, isFirebaseConfigured } from "@/lib/firebase";
-import { syncUserProfileToFirestore } from "./firestore-service";
 
 export interface UserProfile {
   uid: string;
@@ -46,15 +45,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (isFirebaseActive && firebaseAuth) {
       const unsubscribe = onAuthStateChanged(firebaseAuth, (fbUser) => {
         if (fbUser) {
-          const profile: UserProfile = {
+          setUser({
             uid: fbUser.uid,
             email: fbUser.email || "user@cubiq.com",
             displayName: fbUser.displayName || fbUser.email?.split("@")[0] || "CUBIQ Member",
             photoURL: fbUser.photoURL || undefined,
             isDummy: false,
-          };
-          setUser(profile);
-          syncUserProfileToFirestore(profile);
+          });
         } else {
           // Fall back to stored dummy session if any
           const stored = localStorage.getItem(DUMMY_STORAGE_KEY);

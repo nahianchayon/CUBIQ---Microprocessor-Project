@@ -2,20 +2,6 @@ import { initializeApp, getApps, type FirebaseApp } from "firebase/app";
 import { getAuth, type Auth } from "firebase/auth";
 import {
   getFirestore,
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  setDoc,
-  addDoc,
-  updateDoc,
-  deleteDoc,
-  query,
-  where,
-  orderBy,
-  onSnapshot,
-  serverTimestamp,
-  Timestamp,
   type Firestore,
 } from "firebase/firestore";
 import {
@@ -28,11 +14,11 @@ import {
   type Database,
 } from "firebase/database";
 
-// Centralized Firebase Configuration for cubiq-b6979
+// Firebase Configuration for project cubiq-b6979
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyDummyKeyForCubiqProjectB6979",
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "cubiq-b6979.firebaseapp.com",
-  databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL || "https://cubiq-b6979-default-rtdb.firebaseio.com",
+  databaseURL: "https://cubiq-b6979-default-rtdb.firebaseio.com",
   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "cubiq-b6979",
   storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "cubiq-b6979.appspot.com",
   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "409298511406",
@@ -59,28 +45,4 @@ if (typeof window !== "undefined") {
   }
 }
 
-export {
-  firebaseApp,
-  firebaseAuth,
-  db,
-  rtdb,
-  rtdbRef,
-  onValue,
-  set,
-  push,
-  update,
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  setDoc,
-  addDoc,
-  updateDoc,
-  deleteDoc,
-  query,
-  where,
-  orderBy,
-  onSnapshot,
-  serverTimestamp,
-  Timestamp,
-};
+export { firebaseApp, firebaseAuth, db, rtdb, rtdbRef, onValue, set, push, update };
