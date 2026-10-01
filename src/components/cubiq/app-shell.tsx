@@ -233,7 +233,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <div className={cn(user ? "lg:pl-64" : "w-full")}>
         {/* Sticky Header Bar */}
         <header className="sticky top-0 z-20 flex items-center justify-between gap-3 border-b border-border bg-background/85 px-4 py-3 backdrop-blur sm:px-6">
-          {/* Top Left Area: Small Developer Badge + CUBIQ Logo + Dark Mode Button on Right Side of CUBIQ Logo */}
+          {/* Top Left Header Area: CUBIQ Logo + Dark Mode Button on Right Side of CUBIQ Logo */}
           <div className="flex items-center gap-2 sm:gap-3">
             {user ? (
               <Button
@@ -246,24 +246,6 @@ export function AppShell({ children }: { children: ReactNode }) {
                 <Menu className="size-5" />
               </Button>
             ) : null}
-
-            {/* Small Developer Badge in Top Left Corner */}
-            <a
-              href="https://github.com/nahianchayon/CUBIQ---Microprocessor-Project"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 rounded-full border border-border/80 bg-card/90 px-2.5 py-1 shadow-xs hover:border-primary/40 transition-colors"
-              title="Developer: Nahian Rahman Chayon"
-            >
-              <img
-                src="/developer-nahian.jpg"
-                alt="Nahian Rahman Chayon"
-                className="size-5 rounded-full object-cover border border-primary shrink-0"
-              />
-              <span className="text-[0.6875rem] font-bold text-foreground hidden sm:inline-block">
-                Nahian Rahman Chayon
-              </span>
-            </a>
 
             {/* CUBIQ Logo */}
             <Link to="/" aria-label="CUBIQ home" className="flex items-center">
@@ -333,6 +315,36 @@ export function AppShell({ children }: { children: ReactNode }) {
         <main className="mx-auto w-full max-w-6xl px-4 pb-24 pt-6 sm:px-6 sm:pb-10 lg:pt-8">
           <div className="animate-rise flex flex-col gap-6">{children}</div>
         </main>
+
+        {/* Small Developer Badge in Bottom Right Corner */}
+        <footer className="mx-auto w-full max-w-6xl px-4 pb-6 sm:px-6 flex items-center justify-between border-t border-border/40 pt-4">
+          <p className="text-[0.6875rem] text-muted-foreground hidden sm:block">
+            CUBIQ Microprocessor Project &copy; {new Date().getFullYear()}
+          </p>
+
+          {/* Small Developer Badge positioned in Bottom Right Corner */}
+          <a
+            href="https://github.com/nahianchayon/CUBIQ---Microprocessor-Project"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 rounded-xl border border-border/80 bg-card/90 px-2.5 py-1.5 shadow-xs hover:border-primary/40 transition-colors ml-auto sm:ml-0"
+            title="Developer: Nahian Rahman Chayon"
+          >
+            <img
+              src="/developer-nahian.jpg"
+              alt="Nahian Rahman Chayon"
+              className="size-6 rounded-full object-cover border border-primary shrink-0"
+            />
+            <div className="flex flex-col text-left leading-none">
+              <span className="text-[0.6875rem] font-bold text-foreground">
+                Nahian Rahman Chayon
+              </span>
+              <span className="text-[0.5625rem] text-muted-foreground font-medium mt-0.5">
+                Developer
+              </span>
+            </div>
+          </a>
+        </footer>
       </div>
 
       {/* Mobile Bottom Navigation Bar - ONLY SHOWN WHEN USER IS LOGGED IN */}
