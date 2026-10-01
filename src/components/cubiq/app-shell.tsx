@@ -6,16 +6,23 @@ import {
   Cpu,
   FileText,
   LayoutDashboard,
+  LogIn,
+  LogOut,
   Menu,
   Mic,
+  Moon,
   Settings,
   Sparkles,
+  Sun,
   Timer,
+  User,
+  UserPlus,
   X,
 } from "lucide-react";
 
 import { CubiqLogo, StatusBadge } from "@/components/cubiq/primitives";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/lib/cubiq/auth-context";
 import { useDevice, modeLabel } from "@/lib/cubiq/device-store";
 import { cn } from "@/lib/utils";
 
@@ -134,6 +141,27 @@ function DeviceSimulator() {
 export function AppShell({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
   const { device, status } = useDevice();
+  const { user, logout } = useAuth();
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof document !== "undefined") {
+      return document.documentElement.classList.contains("dark");
+    }
+    return true;
+  });
+
+  const toggleTheme = () => {
+    setIsDark((prev) => {
+      const next = !prev;
+      if (typeof document !== "undefined") {
+        if (next) {
+          document.documentElement.classList.add("dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+        }
+      }
+      return next;
+    });
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -191,22 +219,57 @@ export function AppShell({ children }: { children: ReactNode }) {
               <CubiqLogo />
             </span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap justify-end">
             {status === "recording" ? (
               <span className="inline-flex items-center gap-1.5 rounded-full bg-danger-soft px-2.5 py-1 text-xs font-semibold text-destructive">
                 <span aria-hidden className="h-1.5 w-1.5 animate-pulse-dot rounded-full bg-destructive" />
                 RECORDING
               </span>
             ) : null}
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-600 dark:text-emerald-400">
+            <span className="hidden sm:inline-flex items-center gap-1.5 rounded-full border border-border bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-600 dark:text-emerald-400">
               <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              Firebase RTDB Live
+              RTDB Live
             </span>
             <StatusBadge
               health={device.connected ? "online" : "offline"}
-              label={device.connected ? "CUBIQ Connected" : "CUBIQ Offline"}
+              label={device.connected ? "Connected" : "Offline"}
               pulse={device.connected}
             />
+            {/* Dark mode toggle */}
+            <Button
+              size="icon"
+              variant="outline"
+              onClick={toggleTheme}
+              title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+              aria-label="Toggle theme"
+              className="size-8 rounded-lg border-border"
+            >
+              {isDark ? <Sun className="size-4 text-warning" /> : <Moon className="size-4 text-primary" />}
+            </Button>
+            {/* Auth Session / Log In / Sign Up controls */}
+            {user ? (
+              <div className="flex items-center gap-1.5 pl-1">
+                <span className="hidden md:inline-block text-xs font-semibold text-foreground bg-secondary px-2.5 py-1 rounded-lg border border-border">
+                  {user.displayName}
+                </span>
+                <Button size="sm" variant="ghost" className="h-8 text-xs font-semibold hover:bg-destructive/10 hover:text-destructive" onClick={logout} title="Sign Out">
+                  <LogOut className="size-3.5 mr-1" /> Log Out
+                </Button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-1.5 pl-1">
+                <Link to="/login">
+                  <Button size="sm" variant="outline" className="h-8 text-xs font-bold rounded-lg border-border">
+                    <LogIn className="size-3.5 mr-1 text-primary" /> Log In
+                  </Button>
+                </Link>
+                <Link to="/signup">
+                  <Button size="sm" className="h-8 text-xs font-bold rounded-lg bg-primary text-primary-foreground shadow-sm">
+                    <UserPlus className="size-3.5 mr-1" /> Sign Up
+                  </Button>
+                </Link>
+              </div>
+            )}
           </div>
         </header>
 
