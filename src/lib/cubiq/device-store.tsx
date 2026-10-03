@@ -113,7 +113,9 @@ export function DeviceStoreProvider({ children }: { children: ReactNode }) {
 
     if (rtdb) {
       try {
-        push(rtdbRef(rtdb, "cubiq-01/events"), eventItem);
+        push(rtdbRef(rtdb, "cubiq-01/events"), eventItem).catch((e) => {
+          console.warn("RTDB event push notice:", e);
+        });
       } catch (e) {
         console.warn("RTDB event push error:", e);
       }
@@ -129,6 +131,8 @@ export function DeviceStoreProvider({ children }: { children: ReactNode }) {
         status: updatedStatus,
         connected: isConnected,
         lastUpdated: new Date().toISOString(),
+      }).catch((e) => {
+        console.warn("RTDB state set notice:", e);
       });
     } catch (e) {
       console.warn("RTDB state set error:", e);
@@ -147,38 +151,50 @@ export function DeviceStoreProvider({ children }: { children: ReactNode }) {
     if (!rtdb) return;
     try {
       const stateRef = rtdbRef(rtdb, "cubiq-01/state");
-      const unsubscribeState = onValue(stateRef, (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-          if (data.orientation && orientationToMode[data.orientation as Orientation]) {
-            const nextMode = orientationToMode[data.orientation as Orientation];
-            setDevice((prev) => ({
-              ...prev,
-              orientation: data.orientation as Orientation,
-              mode: nextMode,
-              connected: typeof data.connected === "boolean" ? data.connected : prev.connected,
-            }));
+      const unsubscribeState = onValue(
+        stateRef,
+        (snapshot) => {
+          const data = snapshot.val();
+          if (data) {
+            if (data.orientation && orientationToMode[data.orientation as Orientation]) {
+              const nextMode = orientationToMode[data.orientation as Orientation];
+              setDevice((prev) => ({
+                ...prev,
+                orientation: data.orientation as Orientation,
+                mode: nextMode,
+                connected: typeof data.connected === "boolean" ? data.connected : prev.connected,
+              }));
+            }
+            if (data.status) {
+              setStatus(data.status as ActivityStatus);
+            }
           }
-          if (data.status) {
-            setStatus(data.status as ActivityStatus);
-          }
+        },
+        (error) => {
+          console.warn("RTDB state listener notice:", error);
         }
-      });
+      );
 
       const sessionsRef = rtdbRef(rtdb, "cubiq-01/sessions");
-      const unsubscribeSessions = onValue(sessionsRef, (snapshot) => {
-        const data = snapshot.val();
-        if (data && typeof data === "object") {
-          const rtdbSessions: Session[] = Object.values(data);
-          if (rtdbSessions.length > 0) {
-            setSessions((prev) => {
-              const existingIds = new Set(prev.map((s) => s.id));
-              const newUnique = rtdbSessions.filter((s) => !existingIds.has(s.id));
-              return newUnique.length > 0 ? [...newUnique, ...prev] : prev;
-            });
+      const unsubscribeSessions = onValue(
+        sessionsRef,
+        (snapshot) => {
+          const data = snapshot.val();
+          if (data && typeof data === "object") {
+            const rtdbSessions: Session[] = Object.values(data);
+            if (rtdbSessions.length > 0) {
+              setSessions((prev) => {
+                const existingIds = new Set(prev.map((s) => s.id));
+                const newUnique = rtdbSessions.filter((s) => !existingIds.has(s.id));
+                return newUnique.length > 0 ? [...newUnique, ...prev] : prev;
+              });
+            }
           }
+        },
+        (error) => {
+          console.warn("RTDB sessions listener notice:", error);
         }
-      });
+      );
 
       return () => {
         unsubscribeState();

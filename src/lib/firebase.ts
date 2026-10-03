@@ -31,7 +31,7 @@ import {
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyCKn3WM52p-XK_AXKddH6oG7Vw88QqNWGM",
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "cubiq-14fb1.firebaseapp.com",
-  databaseURL: "https://cubiq-14fb1-default-rtdb.firebaseio.com",
+  databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL || "https://cubiq-14fb1-default-rtdb.firebaseio.com",
   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "cubiq-14fb1",
   storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "cubiq-14fb1.firebasestorage.app",
   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "690198114613",
