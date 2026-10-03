@@ -65,7 +65,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setUser(activeUser);
           await syncUserProfileToFirestore(activeUser);
         } else {
-          // Fall back to stored dummy session if any
           const stored = localStorage.getItem(DUMMY_STORAGE_KEY);
           if (stored) {
             try {
@@ -81,7 +80,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
       return () => unsubscribe();
     } else {
-      // Offline / Dummy Auth Mode
       const stored = localStorage.getItem(DUMMY_STORAGE_KEY);
       if (stored) {
         try {
@@ -142,7 +140,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } catch (err: unknown) {
         const message = err instanceof Error ? err.message : "Firebase authentication failed";
         console.error("Firebase Login Error:", err);
-        if (message.includes("user-not-found") || message.includes("wrong-password") || message.includes("invalid-credential")) {
+        if (message.includes("api-key-not-valid") || message.includes("API key")) {
+          toast.error("Firebase API Key is invalid or Identity Toolkit API is not enabled in Firebase Console (cubiq-14fb1).");
+        } else if (message.includes("user-not-found") || message.includes("wrong-password") || message.includes("invalid-credential")) {
           toast.error("Invalid email or password. Please check your credentials or Sign Up.");
         } else {
           toast.error(`Login failed: ${message}`);
@@ -196,7 +196,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } catch (err: unknown) {
         const message = err instanceof Error ? err.message : "Firebase account creation failed";
         console.error("Firebase Signup Error:", err);
-        if (message.includes("email-already-in-use")) {
+        if (message.includes("api-key-not-valid") || message.includes("API key")) {
+          toast.error("Firebase Auth API Key is invalid or Email/Password provider is disabled in Firebase Console.");
+        } else if (message.includes("email-already-in-use")) {
           toast.error("An account with this email already exists. Please Log In instead.");
         } else if (message.includes("weak-password")) {
           toast.error("Password is too weak. Please use at least 6 characters.");
