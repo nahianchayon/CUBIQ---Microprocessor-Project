@@ -46,6 +46,8 @@ export async function syncUserProfileToFirestore(profile: UserProfile): Promise<
         email: profile.email,
         displayName: profile.displayName,
         photoURL: profile.photoURL || null,
+        bio: profile.bio || "CUBIQ Microprocessor Operator",
+        role: profile.role || "Operator",
         updatedAt: serverTimestamp(),
       },
       { merge: true },
@@ -67,6 +69,8 @@ export async function fetchUserProfileFromFirestore(uid: string): Promise<UserPr
         email: data.email || "",
         displayName: data.displayName || "CUBIQ Member",
         photoURL: data.photoURL || undefined,
+        bio: data.bio || "CUBIQ Microprocessor Operator",
+        role: data.role || "Operator",
         isDummy: false,
       };
     }

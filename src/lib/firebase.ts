@@ -27,19 +27,19 @@ import {
   type Database,
 } from "firebase/database";
 
-// Firebase Configuration for project cubiq-14fb1
+// Firebase Configuration for project cubiq-b6979
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyCKn3WM52p-XK_AXKddH6oG7Vw88QqNWGM",
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "cubiq-14fb1.firebaseapp.com",
-  databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL || "https://cubiq-14fb1-default-rtdb.firebaseio.com",
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "cubiq-14fb1",
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "cubiq-14fb1.firebasestorage.app",
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "690198114613",
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:690198114613:web:19091c4d9fda9d69e5dc7c",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyDummyKeyForCubiqProjectB6979",
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "cubiq-b6979.firebaseapp.com",
+  databaseURL: "https://cubiq-b6979-default-rtdb.firebaseio.com",
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "cubiq-b6979",
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "cubiq-b6979.appspot.com",
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "409298511406",
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:409298511406:web:cubiqb6979",
 };
 
 export function isFirebaseConfigured(): boolean {
-  return Boolean(firebaseConfig.apiKey && firebaseConfig.projectId);
+  return Boolean(firebaseConfig.projectId);
 }
 
 let firebaseApp: FirebaseApp | null = null;
