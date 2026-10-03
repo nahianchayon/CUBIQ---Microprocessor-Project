@@ -39,7 +39,12 @@ const firebaseConfig = {
 };
 
 export function isFirebaseConfigured(): boolean {
-  return Boolean(firebaseConfig.projectId);
+  const envKey = import.meta.env.VITE_FIREBASE_API_KEY;
+  return Boolean(
+    envKey &&
+    envKey.trim() !== "" &&
+    !envKey.includes("DummyKey")
+  );
 }
 
 let firebaseApp: FirebaseApp | null = null;

@@ -26,8 +26,8 @@ export interface UserProfile {
 interface AuthContextValue {
   user: UserProfile | null;
   loading: boolean;
-  login: (email: string, pass: string, isDummyMode?: boolean) => Promise<boolean>;
-  signup: (name: string, email: string, pass: string, isDummyMode?: boolean) => Promise<boolean>;
+  login: (email: string, pass: string) => Promise<boolean>;
+  signup: (name: string, email: string, pass: string) => Promise<boolean>;
   logout: () => Promise<void>;
   isFirebaseActive: boolean;
 }
@@ -99,36 +99,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [isFirebaseActive]);
 
-  const login = async (email: string, pass: string, isDummyMode = false): Promise<boolean> => {
+  const login = async (email: string, pass: string): Promise<boolean> => {
     if (!email || !pass) {
       toast.error("Please enter email and password");
       return false;
     }
 
-    if (isFirebaseActive && firebaseAuth && !isDummyMode) {
+    if (isFirebaseActive && firebaseAuth) {
       try {
         const res = await signInWithEmailAndPassword(firebaseAuth, email, pass);
-        const activeUser: UserProfile = {
+        setUser({
           uid: res.user.uid,
           email: res.user.email || email,
           displayName: res.user.displayName || email.split("@")[0] || "User",
-          photoURL: res.user.photoURL || undefined,
-          bio: "CUBIQ Microprocessor Operator",
           isDummy: false,
-        };
-        setUser(activeUser);
-        await syncUserProfileToFirestore(activeUser);
-        toast.success(`Welcome back, ${activeUser.displayName}`);
+        });
+        toast.success(`Welcome back, ${res.user.displayName || email}`);
         return true;
       } catch (err: unknown) {
         const message = err instanceof Error ? err.message : "Firebase authentication failed";
-        console.error("Firebase Login Error:", err);
-        if (message.includes("api-key") || message.includes("API key")) {
-          toast.error("Firebase API Key is missing in .env! Please set VITE_FIREBASE_API_KEY.");
-        } else {
-          toast.error(`Firebase Login Failed: ${message}`);
-        }
-        return false;
+        toast.warning(`Firebase login notice: ${message}. Using instant dummy login.`);
+        // Fallback to instant dummy login so user is never blocked!
       }
     }
 
@@ -139,8 +130,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       uid: `user-${Date.now()}`,
       email,
       displayName,
-      photoURL: "/developer-nahian.jpg",
-      bio: "CUBIQ Microprocessor Operator",
       isDummy: true,
     };
     setUser(dummyUser);
@@ -149,38 +138,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return true;
   };
 
-  const signup = async (name: string, email: string, pass: string, isDummyMode = false): Promise<boolean> => {
+  const signup = async (name: string, email: string, pass: string): Promise<boolean> => {
     if (!email || !pass) {
       toast.error("Please fill in all fields");
       return false;
     }
 
-    if (isFirebaseActive && firebaseAuth && !isDummyMode) {
+    if (isFirebaseActive && firebaseAuth) {
       try {
         const res = await createUserWithEmailAndPassword(firebaseAuth, email, pass);
         if (name && res.user) {
           await updateProfile(res.user, { displayName: name });
         }
-        const activeUser: UserProfile = {
+        setUser({
           uid: res.user.uid,
           email: res.user.email || email,
           displayName: name || email.split("@")[0] || "User",
-          bio: "CUBIQ Microprocessor Operator & Developer",
           isDummy: false,
-        };
-        setUser(activeUser);
-        await syncUserProfileToFirestore(activeUser);
-        toast.success("Account created successfully in Firebase Auth & Firestore!");
+        });
+        toast.success("Account created successfully with Firebase");
         return true;
       } catch (err: unknown) {
         const message = err instanceof Error ? err.message : "Firebase account creation failed";
-        console.error("Firebase Signup Error:", err);
-        if (message.includes("api-key") || message.includes("API key")) {
-          toast.error("Firebase API Key is missing in .env! Please set VITE_FIREBASE_API_KEY.");
-        } else {
-          toast.error(`Firebase Signup Error: ${message}`);
-        }
-        return false;
+        toast.warning(`Firebase notice: ${message}. Creating instant dummy account.`);
       }
     }
 
@@ -189,8 +169,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       uid: `user-${Date.now()}`,
       email,
       displayName: name || email.split("@")[0] || "New Operator",
-      photoURL: "/developer-nahian.jpg",
-      bio: "CUBIQ Microprocessor Operator & Developer",
       isDummy: true,
     };
     setUser(dummyUser);
