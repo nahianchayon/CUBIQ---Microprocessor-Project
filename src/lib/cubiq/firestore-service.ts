@@ -36,7 +36,7 @@ import type { UserProfile } from "./auth-context";
 // USER PROFILES (users/{uid})
 // -------------------------------------------------------------
 export async function syncUserProfileToFirestore(profile: UserProfile): Promise<void> {
-  if (!db) return;
+  if (!db || profile.isDummy) return;
   try {
     const userRef = doc(db, "users", profile.uid);
     await setDoc(
@@ -46,8 +46,6 @@ export async function syncUserProfileToFirestore(profile: UserProfile): Promise<
         email: profile.email,
         displayName: profile.displayName,
         photoURL: profile.photoURL || null,
-        bio: profile.bio || null,
-        role: profile.role || "Operator",
         updatedAt: serverTimestamp(),
       },
       { merge: true },
@@ -69,8 +67,6 @@ export async function fetchUserProfileFromFirestore(uid: string): Promise<UserPr
         email: data.email || "",
         displayName: data.displayName || "CUBIQ Member",
         photoURL: data.photoURL || undefined,
-        bio: data.bio || undefined,
-        role: data.role || "Operator",
         isDummy: false,
       };
     }

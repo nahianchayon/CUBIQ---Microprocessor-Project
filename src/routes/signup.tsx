@@ -49,7 +49,7 @@ function SignupPage() {
   const handleQuickSignup = async () => {
     setSubmitting(true);
     const dummyEmail = `newuser${Math.floor(Math.random() * 900 + 100)}@cubiq.com`;
-    const success = await signup("New Operator", dummyEmail, "password123");
+    const success = await signup("New Operator", dummyEmail, "password123", true);
     setSubmitting(false);
     if (success) {
       navigate({ to: "/" });

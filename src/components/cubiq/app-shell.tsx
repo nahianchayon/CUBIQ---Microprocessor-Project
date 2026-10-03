@@ -285,19 +285,9 @@ export function AppShell({ children }: { children: ReactNode }) {
 
             {user ? (
               <div className="flex items-center gap-2">
-                <Link to="/settings" className="flex items-center gap-2 rounded-full border border-border/80 bg-card/80 px-2 py-1 shadow-2xs hover:border-primary/50 transition-all" title="View Profile & Settings">
-                  <img
-                    src={user.photoURL || "/developer-nahian.jpg"}
-                    alt={user.displayName}
-                    className="size-6 rounded-full object-cover border border-primary shrink-0"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = "/developer-nahian.jpg";
-                    }}
-                  />
-                  <span className="hidden md:inline-block text-xs font-bold text-foreground max-w-[120px] truncate font-display">
-                    {user.displayName}
-                  </span>
-                </Link>
+                <span className="hidden md:inline-block text-xs text-muted-foreground font-medium truncate max-w-[140px]">
+                  {user.email}
+                </span>
                 <Button size="sm" variant="outline" onClick={logout} className="gap-1.5 text-xs">
                   <LogOut className="size-3.5" />
                   Log Out
