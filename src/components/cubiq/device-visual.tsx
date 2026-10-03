@@ -51,3 +51,4 @@ export function DeviceVisual({ compact = false }: { compact?: boolean }) {
     </div>
   );
 }
+

@@ -24,6 +24,7 @@ import { mockDevice, mockSessions } from "./mock-data";
 import { formatDuration } from "./format";
 import type { ActivityStatus, Device, DeviceMode, Orientation, Session } from "./types";
 import { rtdb, rtdbRef, onValue, set, push } from "../firebase";
+import { createFirestoreSession } from "./firestore-service";
 
 export const FOCUS_LENGTH_SECONDS = 25 * 60;
 
@@ -262,6 +263,12 @@ export function DeviceStoreProvider({ children }: { children: ReactNode }) {
       } catch (e) {
         console.warn("RTDB session push error:", e);
       }
+    }
+
+    try {
+      createFirestoreSession(newSession, "demo-user-101");
+    } catch (e) {
+      console.warn("Firestore session error:", e);
     }
 
     syncStateToRtdb(device.orientation, mode, "complete", device.connected);
